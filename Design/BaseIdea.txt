@@ -35,12 +35,12 @@ command list
 	- ping
 	- awk
 	- sed
-
+-------------
 fenetre possible
 - command line
 - command line text editor 
 - network topology
-
+------------------
 asset store
 https://www.assetstore.unity3d.com/en/#!/content/63357
 https://www.assetstore.unity3d.com/en/#!/content/27676
@@ -52,7 +52,7 @@ https://www.assetstore.unity3d.com/en/#!/content/21721
 https://www.assetstore.unity3d.com/en/#!/content/4023 or https://www.assetstore.unity3d.com/en/#!/content/50564
 
 https://www.assetstore.unity3d.com/en/#!/content/29160
-
+-----------------
 TOPOLOGY LEGEND:
 pour la topology j'ai eu la flemme de lié tout les points violet au point rouge/vert aux quels ils sont rattaché donc je les entouré... 
 les point violet peuvent etre relier entre eux (aléatoirement ?)
@@ -63,3 +63,34 @@ bleu shop (avec les shop central ou il y a plus de marchandise)
 le plus gros point bleu c'est le DNS central pas un shop ... 
 jaune les bank
 violet les pc annonyme
+----------
+Hardware
+	memoire vive
+	cpu
+	
+Network
+	bande passante
+	ping (temps de trajet d'un block de donnée)
+	
+File system
+	hierarchie initial
+	/
+		->bin/
+		->data/
+		
+	type de fichier
+		- dossier => list de fichier et sous dossier
+		- binary => executable binary for all the commande
+		- text => for data and script
+	
+Processus
+	un system peut théoriquement executer autant de processus qu'il le souhaite
+	il ne sera limité que par la mémoire vive.
+	de plus le temps cpu est répartie entre tout les processus. ce qui impacte sur leur performance
+	
+Droit utilisateur
+	un fichier peut etre 
+		read possibilité d'afficher son contenu et/ou ses info 
+		write possibilité de le modifier/supprimer
+		execute possibilité de créer un processus (binary and script only)
+		
