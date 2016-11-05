@@ -1,0 +1,33 @@
+{
+  "name": "battlenetwork_server",
+  "version": "1.0.0",
+  "description": "the server used for a new kind of moba game called BattleNetwork",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BattleNetwork/game-off-2016.git"
+  },
+  "keywords": [
+    "hacking",
+    "game",
+    "game",
+    "off",
+    "2016",
+    "server",
+    "battlenetwork"
+  ],
+  "author": "Sray, MrGrimmy, Malabarbumby",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BattleNetwork/game-off-2016/issues"
+  },
+  "homepage": "https://github.com/BattleNetwork/game-off-2016#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "socket.io": "^1.5.1"
+  }
+}
