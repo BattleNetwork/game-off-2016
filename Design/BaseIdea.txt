@@ -1,0 +1,65 @@
+BattleLink GameJam version
+- a moba hacking game
+- 1v1 
+- network topology as lane 
+- cli interface with possibility to have visual indicators (ex: sniffer minimap)
+- base set of command for everyone
+- a set of 8 unic powerful and evolving command evenly split between players.
+- program scripting (as much as you want but they must be lauched manually)
+- bot scripting (could be view as minion as they can operate by themselve but they are limited)
+- the goal => find and destroy your ennemy before he does.
+
+command list
+	protection
+	- password access
+
+	passage de protection
+	- dictionnary brut force
+
+	tracage
+	- access log scanner
+	- ip tracer
+
+	camouflage
+	- cesar encryption algorithm
+	- proxy
+
+	annexe
+	- print 
+	- for
+	- if
+	- ls
+	- cd
+	- ssh
+	- curl
+	- ping
+	- awk
+	- sed
+
+fenetre possible
+- command line
+- command line text editor 
+- network topology
+
+asset store
+https://www.assetstore.unity3d.com/en/#!/content/63357
+https://www.assetstore.unity3d.com/en/#!/content/27676
+https://www.assetstore.unity3d.com/en/#!/content/71142 or https://www.assetstore.unity3d.com/en/#!/content/60417
+https://www.assetstore.unity3d.com/en/#!/content/30891
+https://www.assetstore.unity3d.com/en/#!/content/24938
+https://www.assetstore.unity3d.com/en/#!/content/21721
+
+https://www.assetstore.unity3d.com/en/#!/content/4023 or https://www.assetstore.unity3d.com/en/#!/content/50564
+
+https://www.assetstore.unity3d.com/en/#!/content/29160
+
+TOPOLOGY LEGEND:
+pour la topology j'ai eu la flemme de lié tout les points violet au point rouge/vert aux quels ils sont rattaché donc je les entouré... 
+les point violet peuvent etre relier entre eux (aléatoirement ?)
+
+vert player 1
+rouge player 2
+bleu shop (avec les shop central ou il y a plus de marchandise)
+le plus gros point bleu c'est le DNS central pas un shop ... 
+jaune les bank
+violet les pc annonyme
