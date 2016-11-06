@@ -94,3 +94,8 @@ Droit utilisateur
 		write possibilité de le modifier/supprimer
 		execute possibilité de créer un processus (binary and script only)
 		
+--------------
+scene
+	splash : splash screen + init du game manager
+	menu : start screen, login, lobby list, create lobby, in lobby, game options
+	ingame : play scene
