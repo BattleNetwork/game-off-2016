@@ -26,10 +26,11 @@
   },
   "homepage": "https://github.com/BattleNetwork/game-off-2016#readme",
   "dependencies": {
+    "bluebird": "^3.4.6",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "mongoose": "^4.6.6",
-    "socket.io": "^1.5.1",
+    "socket.io": "^0.9.17",
     "socketio-auth": "^0.1.0"
   }
 }
