@@ -3,6 +3,8 @@ mongoose.Promise = require('bluebird');
 
 var config = require('../config/config.js');
 
+var lobbyManager = require('../lib/lobby.js').LobbyManager;
+
 module.exports = function(io)
 {
     mongoose.connect(config.dbserver);
@@ -42,6 +44,24 @@ module.exports = function(io)
             
             playerModel.findOne({ 'pseudo': pseudo }, 'pseudo registerdate', function(err, player) {
                 socket.playerData = player;
+                socket.on('listlobby', function(parameters){
+                    socket.emit('lobbylist', JSON.stringify(lobbyManager.lobbyList));
+                });
+                socket.on('createlobby', function(parameters){
+                    lobbyManager.AddLobby(parameters.lobbyName);
+                    socket.join(parameters.lobbyName);
+                    socket.emit('lobbycreated');
+                });
+                socket.on('joinlobby', function(parameters){
+                    if(lobbyManager.LobbyExist(parameters.lobbyName))
+                    {
+                        socket.join(parameters.lobbyName);
+                        socket.emit('lobbyjoined');
+                    }
+                    else {
+                        socket.emit('lobbydontexist');
+                    }
+                });
             });
         }
 
