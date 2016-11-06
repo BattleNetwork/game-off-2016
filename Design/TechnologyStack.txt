@@ -1,0 +1,13 @@
+--server--
+javascript
+nodejs
+expressjs
+socket.io
+socketio-auth
+mongodb
+
+--client--
+c#
+unity3D
+dotween
+socket.io for c# (the unity one is deprecated... let see if the c# one is better)
