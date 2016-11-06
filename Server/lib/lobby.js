@@ -21,4 +21,4 @@ LobbyManager.prototype.LobbyExist = function(name) {
 
 
 
-exports.LobbyManager = LobbyManager;
+exports.LobbyManager = new LobbyManager();

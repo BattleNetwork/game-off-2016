@@ -50,24 +50,29 @@ module.exports = function(io)
                 socket.on('createlobby', function(parameters){
                     lobbyManager.AddLobby(parameters.lobbyName);
                     socket.join(parameters.lobbyName);
-                    socket.emit('lobbycreated');
+                    socket.emit('lobbycreated', {'lobbyName':parameters.lobbyName});
                 });
                 socket.on('joinlobby', function(parameters){
                     if(lobbyManager.LobbyExist(parameters.lobbyName))
                     {
                         socket.join(parameters.lobbyName);
-                        socket.emit('lobbyjoined');
+                        socket.emit('lobbyjoined', {'lobbyName':parameters.lobbyName});
                     }
                     else {
-                        socket.emit('lobbydontexist');
+                        socket.emit('lobbydontexist', {'lobbyName':parameters.lobbyName});
                     }
+                });
+
+                socket.on('leavelobby', function(parameters){
+                    socket.leave(socket.room);
+                    socket.emit('lobbyleft');
                 });
             });
         }
 
         function disconnect(socket) {
             console.log(socket.id + ' disconnected');
-            if(socket.playerData != undefined) playerModel.update({'pseudo':socket.playerData.pseudo}, {$set: JSON.stringify(socket.playerData)});
+           // if(socket.playerData != undefined) playerModel.update({'pseudo':socket.playerData.pseudo}, {$set: JSON.stringify(socket.playerData)});
         }
     });
     
