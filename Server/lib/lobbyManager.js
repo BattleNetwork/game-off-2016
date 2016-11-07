@@ -19,6 +19,4 @@ LobbyManager.prototype.LobbyExist = function(name) {
     return this.lobbyList.find(CheckLobby);
 };
 
-
-
 exports.LobbyManager = new LobbyManager();
