@@ -1,5 +1,5 @@
-var playerManager = require('./playerManager.js').PlayerManager;
-var dbManager = require('./dbManager.js').DBManager;
+var playerManager = require('./Managers/playerManager.js').PlayerManager;
+var dbManager = require('./Managers/dbManager.js').DBManager;
 
 module.exports = function(io)
 {

@@ -1,4 +1,4 @@
-var Lobby = require('./lobby.js');
+var Lobby = require('../Models/lobby.js');
 
 var LobbyManager = function () {};
 

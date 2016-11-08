@@ -1,4 +1,4 @@
-var Player = require('./player.js');
+var Player = require('../Models/player.js');
 var async = require('async');
 
 var PlayerManager = function () {}

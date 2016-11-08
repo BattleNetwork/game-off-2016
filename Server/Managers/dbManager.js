@@ -1,4 +1,4 @@
-var config = require('../config/config.js');
+var config = require('../Config/config.js');
 var DatabaseManager = function () {
     this.mongoose = require('mongoose');
     this.mongoose.Promise = require('bluebird');

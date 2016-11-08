@@ -6,7 +6,7 @@ var Player = function(profil, socket) {
     this.room = "";//no room attributed in the first place
 };
 
-Player.prototype.lobbyManager = require('./lobbyManager.js').LobbyManager;
+Player.prototype.lobbyManager = require('../Managers/lobbyManager.js').LobbyManager;
 
 Player.prototype.SetStatusAuthenticated = function()
 {
