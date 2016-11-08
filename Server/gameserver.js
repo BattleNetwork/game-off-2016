@@ -1,5 +1,6 @@
 var playerManager = require('./Managers/playerManager.js').PlayerManager;
 var dbManager = require('./Managers/dbManager.js').DBManager;
+var lobbyManager = require('../Managers/lobbyManager.js').LobbyManager;
 
 module.exports = function(io)
 {
@@ -29,7 +30,9 @@ module.exports = function(io)
         
         var result = dbManager.GetPlayerProfil(pseudo, function(err, player)
         {
+            socket.lobbyManager = lobbyManager;
             playerManager.AddPlayer(player, socket);
+            
         });  
     }
 
