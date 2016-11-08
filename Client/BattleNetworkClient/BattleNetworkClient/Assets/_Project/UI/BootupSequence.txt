@@ -1,0 +1,19 @@
+ARMBIOS(C)1991 Armorican Megawares, LLC.
+PXB2000 BIOS Revision 0.203
+CPU: Roytek(R) Octor(R) Tri-core CPU @ 4.4GHz
+	Speed : 4.41 GHz
+
+Press SHIFT to run Setup
+Press <¦¯> for BBS POPUP
+Memory Frequency 600Mhz, Quad-Channel, Tild Mode
+Checking NVRAM...
+
+1024MB OK
+
+Detecting Primary Master...SCSI Hard Drive.
+Detecting Primary Slave... Not Found.
+
+Primary Master: 1.1 MS348-A
+				Hyper IMA Mode-0.5, D.E.R.R Capable and Status OK
+				
+Press Any Key To Continue...
