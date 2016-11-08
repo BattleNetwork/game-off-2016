@@ -99,3 +99,6 @@ scene
 	splash : splash screen + init du game manager
 	menu : start screen, login, lobby list, create lobby, in lobby, game options
 	ingame : play scene
+	
+	
+	

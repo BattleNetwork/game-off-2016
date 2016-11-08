@@ -1,0 +1,38 @@
+dialogue client server
+
+status: disconnected		
+	msg possible : connect (socket.connect())
+		success => you can use the socket
+		error => popup notification
+		
+status: connected
+	msg obligatoire(timeout si pas envoyer) : authenticate 
+		unauthorized => error message 
+		authenticated => you can use the socket as an identified player
+		
+status: authenticated
+	msg possible : listlobby
+		=> lobbylist : accompagné de la liste (peut etre vide) 
+	msg possible : createlobby
+		=> lobbycreated : accompagné du nom du lobby => status inlobby
+	msg possible : joinlobby
+		=> lobbyjoin : accompagné du nom du lobby => status inlobby
+		
+status: inlobby
+	msg possible : leavelobby
+		=> lobbyleft => status authenticated
+	msg possible : readytoplay (no response)
+	msg possible : unreadytoplay (no response)
+	
+	reception possible : startinggame => status ingame
+	reception possible : playerjoined : avec les info sur le joueur
+	reception possible : playerreadyup : avec le nom du joueur
+	
+status: ingame
+	reception possible : go
+	reception possible : update : avec les info mise a jour
+	reception possible : gameover : avec le nom du gagnant
+	
+	message possible : command
+		=> result : avec le resultat
+	
