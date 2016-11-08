@@ -13,7 +13,7 @@ public class Bootup : MonoBehaviour {
 
     public Image logo;
 
-    private int currentLine = -1;
+    private int currentLine = 0;
     private int endLine;
     private int sequence;
     private float actTime;
@@ -33,12 +33,12 @@ public class Bootup : MonoBehaviour {
 	void Update ()
     {
         actTime += Time.deltaTime;
-        if (actTime >= waitTime & logo.rectTransform.localScale.y < 1f)
+        if (actTime >= waitTime & logo.fillAmount < 1f)
         {
-            logo.rectTransform.localScale += new Vector3(0,0.1f,0);
-            Debug.Log(logo.rectTransform.localScale);
+            logo.fillAmount += 0.1f;
+            actTime = 0.9f;
         }
-        else if(logo.rectTransform.localScale.y >= 1.0f)
+        else if(logo.fillAmount >= 1.0f)
         {
             sequence += 1;
         }
@@ -52,8 +52,8 @@ public class Bootup : MonoBehaviour {
         {
             if (currentLine < endLine)
             {
-                currentLine += 1;
                 text.text = text.text + "\n" + textLines[currentLine];
+                currentLine += 1;
                 actTime = 0;
             }
         }
