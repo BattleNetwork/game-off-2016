@@ -38,6 +38,10 @@ public class TestSocketIO : MonoBehaviour {
                 {
                     Debug.Log("lobby joined // " + result.Json.ToJsonString()+ "//");
                 });
+                socket.On("lobbyleft", (result) =>
+                {
+                    Debug.Log("lobby left");
+                });
             });
         });
 

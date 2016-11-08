@@ -1,41 +1,31 @@
+var Player = require('./player.js');
+var async = require('async');
+
 var PlayerManager = function () {}
 
 PlayerManager.prototype.playerList = new Array();
 
 PlayerManager.prototype.AddPlayer = function(player, socket)
 {
-
+    var newPlayer = new Player(player, socket);
+    newPlayer.SetStatusAuthenticated();
+    this.playerList.push(newPlayer);
 }
 
 PlayerManager.prototype.DisconnectPlayer= function(socketid)
 {
-    
-}
-/*playerModel.findOne({ 'pseudo': pseudo }, 'pseudo registerdate', function(err, player) {
-            socket.playerData = player;
-            socket.on('listlobby', function(parameters){
-                socket.emit('lobbylist', JSON.stringify(lobbyManager.lobbyList));
-            });
-            socket.on('createlobby', function(parameters){
-                lobbyManager.AddLobby(parameters.lobbyName);
-                socket.join(parameters.lobbyName);
-                socket.emit('lobbycreated', {'lobbyName':parameters.lobbyName});
-            });
-            socket.on('joinlobby', function(parameters){
-                if(lobbyManager.LobbyExist(parameters.lobbyName))
-                {
-                    socket.join(parameters.lobbyName);
-                    socket.emit('lobbyjoined', {'lobbyName':parameters.lobbyName});
-                }
-                else {
-                    socket.emit('lobbydontexist', {'lobbyName':parameters.lobbyName});
-                }
-            });
+    var playerList = this.playerList;
+    async.detect(playerList, function(player, callback){
+        if(player.socket.id == socketid) callback(null, true);
+        else callback(null, false);
 
-            socket.on('leavelobby', function(parameters){
-                socket.leave(socket.room);
-                socket.emit('lobbyleft');
-            });
-        });*/
+    }, function(err, playerToDisconnect){
+        if(err || !playerToDisconnect) {
+            console.log("Error while disconnecting player");
+            return;
+        } 
+        playerList.splice(playerList.indexOf(playerToDisconnect), 1);
+    });
+}
 
 exports.PlayerManager = new PlayerManager();

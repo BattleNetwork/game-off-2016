@@ -1,6 +1,4 @@
-var Lobby = function(name) {
-    this.name = name;
-};
+var Lobby = require('./lobby.js');
 
 var LobbyManager = function () {};
 
