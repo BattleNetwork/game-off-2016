@@ -6,8 +6,6 @@ var Player = function(profil, socket) {
     this.room = "";//no room attributed in the first place
 };
 
-Player.prototype.lobbyManager = require('../Managers/lobbyManager.js').LobbyManager;
-
 Player.prototype.SetStatusAuthenticated = function()
 {
     this.ClearSocketEvents();
@@ -58,11 +56,12 @@ Player.prototype.ClearSocketEvents = function()
 
 Player.prototype.ListLobby = function(eventContent)
 {
-    this.emit('lobbylist', JSON.stringify(this.player.lobbyManager.lobbyList));
+    this.emit('lobbylist', JSON.stringify(this.lobbyManager.lobbyList));
 }
 Player.prototype.CreateLobby = function(eventContent)
 {
-    this.player.lobbyManager.AddLobby(eventContent.lobbyName);
+    this.lobby = this.lobbyManager.AddLobby(eventContent.lobbyName);
+    this.lobby.AddPlayer(this.player);
     this.player.room = eventContent.lobbyName;
     this.player.SetStatusInLobby();
     this.join(eventContent.lobbyName);
@@ -70,7 +69,7 @@ Player.prototype.CreateLobby = function(eventContent)
 }
 Player.prototype.JoinLobby = function(eventContent)
 {
-    if(this.player.lobbyManager.LobbyExist(eventContent.lobbyName))
+    if(this.lobbyManager.LobbyExist(eventContent.lobbyName))
     {
         this.join(eventContent.lobbyName);
         this.player.SetStatusInLobby();
