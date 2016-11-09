@@ -6,6 +6,11 @@ une requete web POST à http://adresseduserver/createplayer
 
 avec le pseudo et le pass en données.
 
+en réponse : 
+error => {status:'error', content: null}
+success => {status:'ok', content: player}
+
+
 
 status: disconnected		
 	msg possible : connect (socket.connect())
