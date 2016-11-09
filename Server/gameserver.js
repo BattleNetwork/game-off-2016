@@ -1,11 +1,11 @@
 var playerManager = require('./Managers/playerManager.js').PlayerManager;
 var dbManager = require('./Managers/dbManager.js').DBManager;
-var lobbyManager = require('../Managers/lobbyManager.js').LobbyManager;
+var lobbyManager = require('./Managers/lobbyManager.js').LobbyManager;
 
 module.exports = function(io, app)
 {
     app.post('/createplayer', function (req, res) {
-        dbManager.CreatePlayerProfile(req.pseudo, req.pass, function(err, player)
+        dbManager.CreatePlayerProfile(req.body.pseudo, req.body.pass, function(err, player)
         {
             if(err || !player) res.json({status:'error', content: null})
             res.json({status:'ok', content: player});

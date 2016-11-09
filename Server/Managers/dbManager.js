@@ -28,18 +28,15 @@ DatabaseManager.prototype.GetPlayerProfil = function(pseudo, callback) {
     this.playerModel.findOne({ 'pseudo': pseudo }, 'pseudo registerdate', callback);
 }
 
-DatabaseManager.prototype.CreatePlayerProfile(pseudo, pass)
+DatabaseManager.prototype.CreatePlayerProfile = function(pseudo, pass, callback)
 {
-    var testplayer = new this.playerModel({
+    var newPlayer = new this.playerModel({
             pseudo        : pseudo,
             password      : pass,
             registerdate  : Date.now()
         });
 
-    testplayer.save(function(err, player) {
-        if (err) return "ERROR = " + err;
-        return player;
-    });
+    newPlayer.save(callback);
 }
 
 exports.DBManager = new DatabaseManager();
