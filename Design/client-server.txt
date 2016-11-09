@@ -1,5 +1,12 @@
 dialogue client server
 
+Pour la creation d'un nouvelle utilisateur :
+
+une requete web POST à http://adresseduserver/createplayer
+
+avec le pseudo et le pass en données.
+
+
 status: disconnected		
 	msg possible : connect (socket.connect())
 		success => you can use the socket
