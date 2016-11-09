@@ -1,6 +1,9 @@
 var app = require('express')();
 var http = require('http').Server(app);
 
+var bodyParser = require('body-parser');
+app.use(bodyParser.json()); // for parsing application/json
+
 var io = require('socket.io');
 io = io.listen(http);
 

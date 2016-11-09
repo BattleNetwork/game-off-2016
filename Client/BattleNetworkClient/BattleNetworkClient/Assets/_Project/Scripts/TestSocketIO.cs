@@ -13,8 +13,8 @@ public class TestSocketIO : MonoBehaviour {
             Debug.Log("connect - socket");
 
             Dictionary<string, string> args = new Dictionary<string, string>();
-            args.Add("pseudo", "Test");
-            args.Add("password", "Test");
+            args.Add("pseudo", "toto");
+            args.Add("password", "tata");
             socket.Emit("authentication", args);
             socket.On("unauthorized", (data) => {
                 Debug.Log("unauthorized");
