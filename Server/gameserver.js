@@ -1,8 +1,17 @@
 var playerManager = require('./Managers/playerManager.js').PlayerManager;
 var dbManager = require('./Managers/dbManager.js').DBManager;
+var lobbyManager = require('../Managers/lobbyManager.js').LobbyManager;
 
-module.exports = function(io)
+module.exports = function(io, app)
 {
+    app.post('/createplayer', function (req, res) {
+        dbManager.CreatePlayerProfile(req.pseudo, req.pass, function(err, player)
+        {
+            if(err || !player) res.json({status:'error', content: null})
+            res.json({status:'ok', content: player});
+        });
+    })
+    
     require('socketio-auth')(io, {
         authenticate: authenticate,
         postAuthenticate: postAuthenticate,
@@ -20,8 +29,6 @@ module.exports = function(io)
             if (err || !player) return callback(new Error("User not found"));
             return callback(null, player.password == password);
         });
-        
-        
     }
 
     function postAuthenticate(socket, data) {
@@ -29,7 +36,9 @@ module.exports = function(io)
         
         var result = dbManager.GetPlayerProfil(pseudo, function(err, player)
         {
+            socket.lobbyManager = lobbyManager;
             playerManager.AddPlayer(player, socket);
+            
         });  
     }
 

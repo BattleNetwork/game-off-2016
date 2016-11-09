@@ -7,6 +7,7 @@ LobbyManager.prototype.lobbyList = new Array();
 LobbyManager.prototype.AddLobby = function(name) {
     var newLobby = new Lobby(name);
     this.lobbyList.push(newLobby);
+    return newLobby;
 };
 
 LobbyManager.prototype.LobbyExist = function(name) {
