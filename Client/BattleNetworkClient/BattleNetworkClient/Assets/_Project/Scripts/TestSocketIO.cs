@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class TestSocketIO : MonoBehaviour {
     SocketIOClient.Client socket;
     string lobbyname = "";
+    string pseudo = "";
+    string pass = "";
 
     private void CreateSocket()
     {
@@ -55,6 +57,8 @@ public class TestSocketIO : MonoBehaviour {
         
 
         lobbyname = GUI.TextField(new Rect(180, 30, 250, 30), lobbyname, 40);
+        pseudo = GUI.TextField(new Rect(700, 30, 200, 30), pseudo, 40); ;
+        pass = GUI.TextField(new Rect(700, 70, 200, 30), pass, 40); ;
 
         if (GUI.Button(new Rect(20, 70, 150, 30), "listlobby"))
         {
@@ -104,10 +108,29 @@ public class TestSocketIO : MonoBehaviour {
             Dictionary<string, string> args = new Dictionary<string, string>();
             socket.Emit("leavelobby", args);
         }
+
+        if (GUI.Button(new Rect(700, 120, 150, 30), "Create user"))
+        {
+            StartCoroutine(UserCreationRequest());
+        }
+    }
+
+    IEnumerator UserCreationRequest()
+    {
+        string json = "{\"pseudo\":\"" + pseudo + "\", \"pass\":\"" + pass + "\"}";
+        byte[] encode = System.Text.Encoding.ASCII.GetBytes(json.ToCharArray());
+        Dictionary<string, string> header = new Dictionary<string, string>();
+        header.Add("Content-Type", "application/json");
+
+        WWW www = new WWW("http://localhost:3000/createplayer", encode, header);
+        yield return www;
+
+        Debug.Log(www.error);
+        Debug.Log(www.text);
     }
 
     void OnDestroy()
     {
-        socket.Close();
+       if(socket != null) socket.Close();
     }
 }
