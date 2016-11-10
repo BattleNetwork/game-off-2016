@@ -3,8 +3,11 @@ var DatabaseManager = function () {
     this.mongoose = require('mongoose');
     this.mongoose.Promise = require('bluebird');
     this.mongoose.connect(config.dbserver);
+
+    //closures
     var Schema = this.mongoose.Schema;
-    var instance = this;
+    var instance = this;      
+
     this.db = this.mongoose.connection;
     this.db.on('error', console.error.bind(console, 'connection error:'));
     this.db.once('open', function() {
@@ -18,17 +21,17 @@ var DatabaseManager = function () {
     });
 };
 
-DatabaseManager.prototype.GetPlayerAuthentication = function(pseudo, callback) {
+DatabaseManager.prototype.GetPlayerAuthentication = function(pseudo, Callback) {
     var result = new Object();
-    this.playerModel.findOne({ 'pseudo': pseudo }, 'pseudo password', callback);
+    this.playerModel.findOne({ 'pseudo': pseudo }, 'pseudo password', Callback);
 }
 
-DatabaseManager.prototype.GetPlayerProfil = function(pseudo, callback) {
+DatabaseManager.prototype.GetPlayerProfil = function(pseudo, Callback) {
     var result = new Object();
-    this.playerModel.findOne({ 'pseudo': pseudo }, 'pseudo registerdate', callback);
+    this.playerModel.findOne({ 'pseudo': pseudo }, 'pseudo registerdate', Callback);
 }
 
-DatabaseManager.prototype.CreatePlayerProfile = function(pseudo, pass, callback)
+DatabaseManager.prototype.CreatePlayerProfile = function(pseudo, pass, Callback)
 {
     var newPlayer = new this.playerModel({
             pseudo        : pseudo,
@@ -36,7 +39,7 @@ DatabaseManager.prototype.CreatePlayerProfile = function(pseudo, pass, callback)
             registerdate  : Date.now()
         });
 
-    newPlayer.save(callback);
+    newPlayer.save(Callback);
 }
 
 exports.DBManager = new DatabaseManager();

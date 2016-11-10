@@ -8,16 +8,16 @@ PlayerManager.prototype.playerList = new Array();
 PlayerManager.prototype.AddPlayer = function(player, socket)
 {
     var newPlayer = new Player(player, socket);
-    newPlayer.SetStatusAuthenticated();
+    newPlayer.SetStatusAuthenticated();//il le merite bien non ? 
     this.playerList.push(newPlayer);
 }
 
 PlayerManager.prototype.DisconnectPlayer= function(socketid)
 {
     var playerList = this.playerList;
-    async.detect(playerList, function(player, callback){
-        if(player.socket.id == socketid) callback(null, true);
-        else callback(null, false);
+    async.detect(playerList, function(player, Callback){
+        if(player.socket.id == socketid) Callback(null, true);
+        else Callback(null, false);
 
     }, function(err, playerToDisconnect){
         if(err || !playerToDisconnect) {

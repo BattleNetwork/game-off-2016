@@ -13,16 +13,15 @@ module.exports = function(io, app)
     })
     
     require('socketio-auth')(io, {
-        authenticate: authenticate,
-        postAuthenticate: postAuthenticate,
-        disconnect: disconnect,
+        authenticate: Authenticate,
+        postAuthenticate: PostAuthenticate,
+        disconnect: Disconnect,
         timeout: 1000
     });
 
-    function authenticate(socket, data, callback) {
+    function Authenticate(socket, data, callback) {
         var pseudo = data.pseudo;
         var password = data.password;
-        console.log("pseudo :" + pseudo + " / pass : " + password);
 
         var result = dbManager.GetPlayerAuthentication(pseudo, function(err, player)
         {
@@ -31,7 +30,7 @@ module.exports = function(io, app)
         });
     }
 
-    function postAuthenticate(socket, data) {
+    function PostAuthenticate(socket, data) {
         var pseudo = data.pseudo;
         
         var result = dbManager.GetPlayerProfil(pseudo, function(err, player)
@@ -42,8 +41,7 @@ module.exports = function(io, app)
         });  
     }
 
-    function disconnect(socket) {
+    function Disconnect(socket) {
         playerManager.DisconnectPlayer(socket.id);
-        console.log(socket.id + ' disconnected');
     }   
 }

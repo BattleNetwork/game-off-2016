@@ -4,6 +4,7 @@ var Player = function(profil, socket) {
     this.socket.player = this;//because when in event callback this = socket and not the player...
     this.status = "init";
     this.room = "";//no room attributed in the first place
+    this.isReady = false;
 };
 
 Player.prototype.SetStatusAuthenticated = function()
@@ -29,6 +30,7 @@ Player.prototype.SetStatusInLobby = function()
 Player.prototype.SetStatusInGame = function()
 {
     this.ClearSocketEvents();
+
     this.socket.on('command',this.Command);
 
     this.status = "ingame";
@@ -71,6 +73,9 @@ Player.prototype.JoinLobby = function(eventContent)
 {
     if(this.lobbyManager.LobbyExist(eventContent.lobbyName))
     {
+        this.lobby = this.lobbyManager.GetLobby(eventContent.lobbyName);
+        this.lobby.AddPlayer(this.player);
+        this.player.room = eventContent.lobbyName;
         this.join(eventContent.lobbyName);
         this.player.SetStatusInLobby();
         this.emit('lobbyjoined', {'lobbyName':eventContent.lobbyName});
@@ -85,17 +90,19 @@ Player.prototype.LeaveLobby = function(eventContent)
     this.player.SetStatusAuthenticated();
     this.emit('lobbyleft', null);
 }
+
+//The following functions ara listened when the player is in a lobby so we delegate the work to it
 Player.prototype.ReadyToPlay = function(eventContent)
 {
-    
+    this.lobby.SetPlayerReady(this.player);
 }
 Player.prototype.UnReadyToPlay = function(eventContent)
 {
-    
+    this.lobby.SetPlayerUnready(this.player);
 }
 
 Player.prototype.Command = function(eventContent)
 {
-    
+    this.lobby.ExecutePlayerCommand(this.player, eventContent);
 }
 module.exports = Player;
