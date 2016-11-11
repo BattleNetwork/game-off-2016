@@ -23,6 +23,7 @@ Player.prototype.SetStatusInLobby = function()
     this.socket.on('leavelobby',this.LeaveLobby);
     this.socket.on('readytoplay',this.ReadyToPlay);
     this.socket.on('unreadytoplay',this.UnReadyToPlay);
+    this.socket.on('ingame',this.InGame);
     
     this.status = "inlobby";
 }
@@ -49,6 +50,7 @@ Player.prototype.ClearSocketEvents = function()
             this.socket.removeListener('leavelobby',this.LeaveLobby);
             this.socket.removeListener('readytoplay',this.ReadyToPlay);
             this.socket.removeListener('unreadytoplay',this.UnReadyToPlay);
+            this.socket.removeListener('ingame',this.InGame);
         break;
         case "ingame":
             this.socket.removeListener('command',this.Command);
@@ -92,6 +94,10 @@ Player.prototype.LeaveLobby = function(eventContent)
 }
 
 //The following functions ara listened when the player is in a lobby so we delegate the work to it
+Player.prototype.InGame = function(eventContent)
+{
+    this.lobby.SetPlayerInGame(this.player);
+}
 Player.prototype.ReadyToPlay = function(eventContent)
 {
     this.lobby.SetPlayerReady(this.player);

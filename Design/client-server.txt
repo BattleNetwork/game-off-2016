@@ -1,5 +1,7 @@
 dialogue client server
 
+LES STATUS MENTIONNE SONT CEUX COTE SERVEUR
+
 Pour la creation d'un nouvelle utilisateur :
 
 une requete web POST à http://adresseduserver/createplayer
@@ -33,15 +35,20 @@ status: authenticated
 status: inlobby
 	msg possible : leavelobby
 		=> lobbyleft => status authenticated
-	msg possible : readytoplay (no response)
+	msg possible : readytoplay 
+		=> readyset : no arg
+		si 2eme ready => goingame(broadcasted to all) : no arg
 	msg possible : unreadytoplay (no response)
-	
-	reception possible : startinggame => status ingame
+		=> unreadyset : no arg
+		si goingingame => cantunready : no arg
+	msg possible : ingame
+		si deuxieme => countdown(broadcasted to all) : 5 //value for the countdown => status ingame
+					
+		
 	reception possible : playerjoined : avec les info sur le joueur
 	reception possible : playerreadyup : avec le nom du joueur
 	
 status: ingame
-	reception possible : go
 	reception possible : update : avec les info mise a jour
 	reception possible : gameover : avec le nom du gagnant
 	
