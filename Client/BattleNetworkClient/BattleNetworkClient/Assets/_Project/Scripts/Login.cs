@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class Login : MonoBehaviour {
     public GameObject titleText;
@@ -43,8 +44,7 @@ public class Login : MonoBehaviour {
             }
         }
     }
-
-    void LobbyTransition()
+    IEnumerator LobbyTransition()
     {
         switch(sequence)
         {
@@ -67,7 +67,9 @@ public class Login : MonoBehaviour {
                 }
                 else if (qButtonRect.anchoredPosition.y >= 95f)
                 {
+                    yield return new WaitForSeconds(2f);
                     sequence += 1;
+                    break;
                 }
                 break;
             case 3:
@@ -79,16 +81,37 @@ public class Login : MonoBehaviour {
                 loginButton.GetComponent<Image>().CrossFadeAlpha(0, 0.1f, true);
                 loginButton.GetComponentInChildren<Text>().CrossFadeAlpha(0, 0.1f, true);
                 settingsButton.GetComponent<Image>().CrossFadeAlpha(0, 0.1f, true);
-                //titleTextRect.anchorMax = new Vector2(0, 1);
-                //titleTextRect.anchorMin = new Vector2(0, 1);
-                break;
+                yield return new WaitForSeconds(2f);
 
+                titleTextRect.anchorMax = new Vector2(0, 1);
+                titleTextRect.anchorMin = new Vector2(0, 1);
+                loginButton.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
+                loginButton.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1);
+                quitButton.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
+                quitButton.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1);
+                settingsButton.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
+                settingsButton.GetComponent<RectTransform>().anchorMin = new Vector2(0, 1);
+                titleTextText.rectTransform.anchoredPosition = new Vector2(150, -30);
+                quitButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(90, -80);
+                loginButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(145, -80);
+                settingsButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(200, -80);
+
+                titleTextText.CrossFadeAlpha(1, 0.1f, true);
+                quitButton.GetComponent<Image>().CrossFadeAlpha(1, 0.1f, true);
+                quitButton.GetComponentInChildren<Text>().CrossFadeAlpha(1, 0.1f, true);
+                loginButton.GetComponent<Image>().CrossFadeAlpha(1, 0.1f, true);
+                loginButton.GetComponentInChildren<Text>().CrossFadeAlpha(1, 0.1f, true);
+                settingsButton.GetComponent<Image>().CrossFadeAlpha(1, 0.1f, true);
+                titleTextRect.anchoredPosition = new Vector2(150, -30);
+                break;
         }
     }
 
     // Use this for initialization
     void Start ()
     {
+        Sequence lobbySequence = DOTween.Sequence();
+
         titleTextText = titleText.GetComponent<Text>();
         titleTextRect = titleText.GetComponent<RectTransform>();
         Button lButton = loginButton.GetComponent<Button>();
@@ -105,7 +128,7 @@ public class Login : MonoBehaviour {
         actTime += Time.deltaTime;
         if (connectionStatus == 0)
         {
-            LobbyTransition();
+            StartCoroutine("LobbyTransition");
         }
 	}
 }
