@@ -44,6 +44,54 @@ public class TestSocketIO : MonoBehaviour {
                 {
                     Debug.Log("lobby left");
                 });
+                socket.On("readyset", (result) =>
+                {
+                    Debug.Log("readyset");
+                });
+                socket.On("goingame", (result) =>
+                {
+                    Debug.Log("goingame");
+                });
+                socket.On("unreadyset", (result) =>
+                {
+                    Debug.Log("unreadyset");
+                });
+                socket.On("cantunready", (result) =>
+                {
+                    Debug.Log("cantunready");
+                });
+                socket.On("countdown", (result) =>
+                {
+                    Debug.Log("countdown");
+                });
+                socket.On("playerjoined", (result) =>
+                {
+                    Debug.Log("playerjoined");
+                });
+                socket.On("playerleft", (result) =>
+                {
+                    Debug.Log("playerleft");
+                });
+                socket.On("opponentreadyup", (result) =>
+                {
+                    Debug.Log("opponentreadyup");
+                });
+                socket.On("opponentunready", (result) =>
+                {
+                    Debug.Log("opponentunready");
+                });
+                socket.On("update", (result) =>
+                {
+                    Debug.Log("update");
+                });
+                socket.On("gameover", (result) =>
+                {
+                    Debug.Log("gameover");
+                });
+                socket.On("result", (result) =>
+                {
+                    Debug.Log("result");
+                });
             });
         });
 
@@ -127,6 +175,10 @@ public class TestSocketIO : MonoBehaviour {
 
         Debug.Log(www.error);
         Debug.Log(www.text);
+        if(!string.IsNullOrEmpty(www.error))
+        {
+
+        }
     }
 
     void OnDestroy()
