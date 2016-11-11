@@ -26,13 +26,13 @@ Lobby.prototype.SetPlayerReady = function(player)
     {
         if(opponent.isReady)
         {
-            opponent.socket.emit('playerreadyup', JSON.stringify(player.name));
+            opponent.socket.emit('opponentreadyup', JSON.stringify(player.name));
             this.isGoingInGame = true;
             this.Broadcast('goingame', null);
         }
         else 
         {
-            opponent.socket.emit('playerreadyup', JSON.stringify(player.name));
+            opponent.socket.emit('opponentreadyup', JSON.stringify(player.name));
         }
     }
 }
