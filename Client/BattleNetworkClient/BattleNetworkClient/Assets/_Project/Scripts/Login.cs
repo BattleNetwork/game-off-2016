@@ -110,7 +110,6 @@ public class Login : MonoBehaviour {
                 settingsButton.GetComponent<Image>().CrossFadeAlpha(1, 0.1f, true);
                 alpha = quitButton.GetComponent<Image>().canvasRenderer.GetAlpha();
                 alpha = Mathf.Round(alpha);
-                Debug.Log(alpha);
                 if (alpha >= 1)
                 {
                     sequence += 1;
@@ -120,7 +119,7 @@ public class Login : MonoBehaviour {
                 loginListPanel.gameObject.SetActive(true);
                 if (loginListPanel.fillAmount < 1)
                 {
-                    loginListPanel.fillAmount += 0.025f;
+                    loginListPanel.fillAmount += 0.02f;
                 }
                 else if(loginListPanel.fillAmount >= 1)
                 {
