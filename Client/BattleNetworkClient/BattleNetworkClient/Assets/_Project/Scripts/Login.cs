@@ -11,6 +11,7 @@ public class Login : MonoBehaviour {
     public GameObject settingsButton;
     public GameObject quitButton;
     public GameObject loginButton;
+    public Image loginListPanel;
     public float waitTime = 10;
     public int successOrFail; //debug: 0 = successful connection, 1 = fail.
 
@@ -23,6 +24,7 @@ public class Login : MonoBehaviour {
     private RectTransform lButtonRect;
     private RectTransform sButtonRect;
     private RectTransform titleTextRect;
+    private float alpha;
 
 
 
@@ -67,22 +69,23 @@ public class Login : MonoBehaviour {
                 }
                 else if (qButtonRect.anchoredPosition.y >= 95f)
                 {
-                    yield return new WaitForSeconds(2f);
+                    titleTextText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 250);
+                    titleTextText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 30);
+                    titleTextText.CrossFadeAlpha(0, 0.1f, true);
+                    quitButton.GetComponent<Image>().CrossFadeAlpha(-1, 0.1f, true);
+                    quitButton.GetComponentInChildren<Text>().CrossFadeAlpha(0, 0.1f, true);
+                    loginButton.GetComponent<Image>().CrossFadeAlpha(0, 0.1f, true);
+                    loginButton.GetComponentInChildren<Text>().CrossFadeAlpha(0, 0.1f, true);
+                    settingsButton.GetComponent<Image>().CrossFadeAlpha(0, 0.1f, true);
+                    alpha = quitButton.GetComponent<Image>().canvasRenderer.GetAlpha();
+                }
+                if (alpha < 0.0f)
+                {
                     sequence += 1;
-                    break;
                 }
                 break;
-            case 3:
-                titleTextText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, 250);
-                titleTextText.rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 30);
-                titleTextText.CrossFadeAlpha(0, 0.1f, true);
-                quitButton.GetComponent<Image>().CrossFadeAlpha(0, 0.1f, true);
-                quitButton.GetComponentInChildren<Text>().CrossFadeAlpha(0, 0.1f, true);
-                loginButton.GetComponent<Image>().CrossFadeAlpha(0, 0.1f, true);
-                loginButton.GetComponentInChildren<Text>().CrossFadeAlpha(0, 0.1f, true);
-                settingsButton.GetComponent<Image>().CrossFadeAlpha(0, 0.1f, true);
-                yield return new WaitForSeconds(2f);
 
+            case 3:
                 titleTextRect.anchorMax = new Vector2(0, 1);
                 titleTextRect.anchorMin = new Vector2(0, 1);
                 loginButton.GetComponent<RectTransform>().anchorMax = new Vector2(0, 1);
@@ -95,16 +98,39 @@ public class Login : MonoBehaviour {
                 quitButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(90, -80);
                 loginButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(145, -80);
                 settingsButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(200, -80);
+                sequence += 1;
+                break;
 
+            case 4:
                 titleTextText.CrossFadeAlpha(1, 0.1f, true);
                 quitButton.GetComponent<Image>().CrossFadeAlpha(1, 0.1f, true);
                 quitButton.GetComponentInChildren<Text>().CrossFadeAlpha(1, 0.1f, true);
                 loginButton.GetComponent<Image>().CrossFadeAlpha(1, 0.1f, true);
                 loginButton.GetComponentInChildren<Text>().CrossFadeAlpha(1, 0.1f, true);
                 settingsButton.GetComponent<Image>().CrossFadeAlpha(1, 0.1f, true);
-                titleTextRect.anchoredPosition = new Vector2(150, -30);
+                alpha = quitButton.GetComponent<Image>().canvasRenderer.GetAlpha();
+                alpha = Mathf.Round(alpha);
+                Debug.Log(alpha);
+                if (alpha >= 1)
+                {
+                    sequence += 1;
+                }
+                break;
+            case 5:
+                loginListPanel.gameObject.SetActive(true);
+                if (loginListPanel.fillAmount < 1)
+                {
+                    loginListPanel.fillAmount += 0.025f;
+                }
+                else if(loginListPanel.fillAmount >= 1)
+                {
+                    sequence += 1;
+                }
+                break;
+            default:
                 break;
         }
+        yield return null;
     }
 
     // Use this for initialization
@@ -119,6 +145,7 @@ public class Login : MonoBehaviour {
         qButtonRect = quitButton.GetComponent<RectTransform>();
         lButtonRect = loginButton.GetComponent<RectTransform>();
         sButtonRect = settingsButton.GetComponent<RectTransform>();
+        loginListPanel.gameObject.SetActive(false);
 
     }
 
