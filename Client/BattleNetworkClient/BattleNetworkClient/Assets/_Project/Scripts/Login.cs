@@ -130,9 +130,9 @@ public class Login : MonoBehaviour {
                 }
                 break;
             case 6:
-                connectButton.SetActive(true);
                 ipConnectButton.SetActive(true);
                 refreshButton.SetActive(true);
+                connectButton.SetActive(true);
                 break;
 
             default:
