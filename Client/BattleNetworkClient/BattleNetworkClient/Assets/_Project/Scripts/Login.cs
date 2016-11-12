@@ -13,6 +13,9 @@ public class Login : MonoBehaviour {
     public GameObject loginButton;
     public Image loginListPanel;
     public float waitTime = 10;
+    public GameObject connectButton;
+    public GameObject refreshButton;
+    public GameObject ipConnectButton;
     public int successOrFail; //debug: 0 = successful connection, 1 = fail.
 
     private float actTime;
@@ -46,7 +49,7 @@ public class Login : MonoBehaviour {
             }
         }
     }
-    IEnumerator LobbyTransition()
+    void LobbyTransition()
     {
         switch(sequence)
         {
@@ -126,10 +129,15 @@ public class Login : MonoBehaviour {
                     sequence += 1;
                 }
                 break;
+            case 6:
+                connectButton.SetActive(true);
+                ipConnectButton.SetActive(true);
+                refreshButton.SetActive(true);
+                break;
+
             default:
                 break;
         }
-        yield return null;
     }
 
     // Use this for initialization
@@ -145,6 +153,10 @@ public class Login : MonoBehaviour {
         lButtonRect = loginButton.GetComponent<RectTransform>();
         sButtonRect = settingsButton.GetComponent<RectTransform>();
         loginListPanel.gameObject.SetActive(false);
+        ipConnectButton.SetActive(false);
+        refreshButton.SetActive(false);
+        connectButton.SetActive(false);
+
 
     }
 
