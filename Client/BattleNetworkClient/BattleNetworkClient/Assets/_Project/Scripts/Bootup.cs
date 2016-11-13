@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class Bootup : MonoBehaviour {
 
@@ -13,11 +14,13 @@ public class Bootup : MonoBehaviour {
     public float speed;
 
     public Image logo;
+    public Image troll;
 
     private int currentLine = 0;
     private int endLine;
     private int sequence;
     private float actTime;
+    
 
     bool LoadingSequence()
     {
@@ -75,5 +78,17 @@ public class Bootup : MonoBehaviour {
         {
             SceneManager.LoadScene("MainMenu", LoadSceneMode.Single);
         }
+
+        if (Input.GetKeyDown(KeyCode.LeftShift) && sequence != 3)
+            DisplayTroll();
+    }
+
+    private void DisplayTroll()
+    {
+        Sequence trollSequence = DOTween.Sequence();
+        trollSequence.Append(troll.DOFade(1.0f, 0.2f));
+        trollSequence.AppendInterval(1.0f);
+        trollSequence.Append(troll.DOFade(0.0f, 0.2f));
+
     }
 }
