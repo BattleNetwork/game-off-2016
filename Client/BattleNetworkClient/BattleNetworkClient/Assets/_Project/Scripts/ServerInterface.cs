@@ -10,7 +10,8 @@ public class ServerInterface : MonoBehaviour
     private SocketIOClient.Client _socket;
 
     #region Events
-    public delegate void NetworkEvent(string result);
+    public delegate void NetworkEvent(JSONNode result);
+    public delegate void NetworkErrorEvent(string error);
 
     public static event NetworkEvent UserCreated;
     public static event NetworkEvent UserNotCreated;
@@ -30,7 +31,7 @@ public class ServerInterface : MonoBehaviour
     public static event NetworkEvent Update;
     public static event NetworkEvent Gameover;
     public static event NetworkEvent Result;
-    public static event NetworkEvent Error;
+    public static event NetworkErrorEvent Error;
     #endregion
 
 
