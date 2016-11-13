@@ -15,7 +15,6 @@ public class Login : MonoBehaviour {
     public float waitTime = 10;
     public GameObject connectButton;
     public GameObject refreshButton;
-    public GameObject ipConnectButton;
     public int successOrFail; //debug: 0 = successful connection, 1 = fail.
 
     private float actTime;
@@ -130,7 +129,6 @@ public class Login : MonoBehaviour {
                 }
                 break;
             case 6:
-                ipConnectButton.SetActive(true);
                 refreshButton.SetActive(true);
                 connectButton.SetActive(true);
                 break;
@@ -153,7 +151,6 @@ public class Login : MonoBehaviour {
         lButtonRect = loginButton.GetComponent<RectTransform>();
         sButtonRect = settingsButton.GetComponent<RectTransform>();
         loginListPanel.gameObject.SetActive(false);
-        ipConnectButton.SetActive(false);
         refreshButton.SetActive(false);
         connectButton.SetActive(false);
 
