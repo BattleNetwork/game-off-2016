@@ -15,12 +15,10 @@ public class Login : MonoBehaviour {
     public float waitTime = 10;
     public GameObject connectButton;
     public GameObject refreshButton;
-    public int successOrFail; //debug: 0 = successful connection, 1 = fail.
+    public GameObject createButton;
 
     private float actTime;
-    private float loginWaitTime = 5.0f;
     private Text titleTextText;
-    private int connectionStatus= -1;
     private int sequence = 1;
     private RectTransform qButtonRect;
     private RectTransform lButtonRect;
@@ -28,26 +26,6 @@ public class Login : MonoBehaviour {
     private RectTransform titleTextRect;
     private float alpha;
 
-
-
-
-    public void LobbyConnection()
-    {
-        while (connectionStatus < 0)
-        {
-            actTime += Time.deltaTime;
-            if (successOrFail == 0 & actTime >= loginWaitTime) //change to connection result SUCCESS when implemented
-            {
-                GameObject.Find("LoggingInText").GetComponent<Text>().text = "Connected.";
-                connectionStatus = 0;
-            }
-            else if (successOrFail == 1 & actTime >= loginWaitTime)
-            {
-                GameObject.Find("LoggingInText").GetComponent<Text>().text = "Connection Failed.";
-                connectionStatus = 1;
-            }
-        }
-    }
     void LobbyTransition()
     {
         switch(sequence)
@@ -131,6 +109,8 @@ public class Login : MonoBehaviour {
             case 6:
                 refreshButton.SetActive(true);
                 connectButton.SetActive(true);
+                createButton.SetActive(true);
+
                 break;
 
             default:
@@ -141,29 +121,17 @@ public class Login : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        Sequence lobbySequence = DOTween.Sequence();
-
         titleTextText = titleText.GetComponent<Text>();
         titleTextRect = titleText.GetComponent<RectTransform>();
         Button lButton = loginButton.GetComponent<Button>();
-        lButton.onClick.AddListener(LobbyConnection);
         qButtonRect = quitButton.GetComponent<RectTransform>();
         lButtonRect = loginButton.GetComponent<RectTransform>();
         sButtonRect = settingsButton.GetComponent<RectTransform>();
         loginListPanel.gameObject.SetActive(false);
         refreshButton.SetActive(false);
         connectButton.SetActive(false);
+        createButton.SetActive(false);
 
 
     }
-
-    // Update is called once per frame
-    void Update ()
-    {
-        actTime += Time.deltaTime;
-        if (connectionStatus == 0)
-        {
-            StartCoroutine("LobbyTransition");
-        }
-	}
 }
