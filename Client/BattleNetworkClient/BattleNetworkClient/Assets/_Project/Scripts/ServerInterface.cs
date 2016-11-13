@@ -30,6 +30,7 @@ public class ServerInterface : MonoBehaviour
     public static event NetworkEvent Update;
     public static event NetworkEvent Gameover;
     public static event NetworkEvent Result;
+    public static event NetworkEvent Error;
     #endregion
 
 
@@ -226,6 +227,12 @@ public class ServerInterface : MonoBehaviour
                         Result(JSONNode.Parse(result.Json.ToJsonString()));
                 });
             });
+
+            _socket.Error += (sender, e) => {
+                Debug.Log("socket Error: " + e.Message.ToString());
+                if (Error != null)
+                    Error(e.Message.ToString());
+            };
         });
     }
 }
