@@ -10,10 +10,13 @@ public class ServerInterface : MonoBehaviour
     private SocketIOClient.Client _socket;
 
     #region Events
-    public delegate void NetworkEvent(string result);
+    public delegate void NetworkEvent(JSONNode result);
+    public delegate void NetworkErrorEvent(string error);
 
     public static event NetworkEvent UserCreated;
     public static event NetworkEvent UserNotCreated;
+    public static event NetworkEvent Authenticated;
+    public static event NetworkEvent Unauthorized;
     public static event NetworkEvent LobbyList;
     public static event NetworkEvent LobbyCreated;
     public static event NetworkEvent LobbyJoined;
@@ -30,6 +33,7 @@ public class ServerInterface : MonoBehaviour
     public static event NetworkEvent Update;
     public static event NetworkEvent Gameover;
     public static event NetworkEvent Result;
+    public static event NetworkErrorEvent Error;
     #endregion
 
 
@@ -124,11 +128,15 @@ public class ServerInterface : MonoBehaviour
             _socket.On("unauthorized", (data) =>
             {
                 Debug.Log("unauthorized");
+                if (Unauthorized != null)
+                    Unauthorized(null);
                 _socket.Close();
             });
             _socket.On("authenticated", (data) =>
             {
                 Debug.Log("authenticated");
+                if (Authenticated != null)
+                    Authenticated(null);
                 _socket.On("lobbylist", (result) =>
                 {
                     Debug.Log("lobby list // " + result.Json.ToJsonString() + "//");
@@ -226,6 +234,12 @@ public class ServerInterface : MonoBehaviour
                         Result(JSONNode.Parse(result.Json.ToJsonString()));
                 });
             });
+
+            _socket.Error += (sender, e) => {
+                Debug.Log("socket Error: " + e.Message.ToString());
+                if (Error != null)
+                    Error(e.Message.ToString());
+            };
         });
     }
 }
