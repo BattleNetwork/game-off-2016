@@ -3,7 +3,7 @@ var async = require('async');
 var Lobby = function(name) {
     this.name = name;
     this.isGoingInGame = false;
-    this.player.isInGame = false;
+    
     this.players = new Array();
 };
 
