@@ -5,6 +5,7 @@ var Player = function(profil, socket) {
     this.status = "init";
     this.room = "";//no room attributed in the first place
     this.isReady = false;
+    this.isInGame = false;
 };
 
 Player.prototype.SetStatusAuthenticated = function()
@@ -60,7 +61,18 @@ Player.prototype.ClearSocketEvents = function()
 
 Player.prototype.ListLobby = function(eventContent)
 {
-    this.emit('lobbylist', JSON.stringify(this.lobbyManager.lobbyList));
+    this.emit('lobbylist', JSON.stringify(this.lobbyManager.lobbyList, ["name"]));
+}
+
+seen = [];
+function replacer(key, val) {
+   if (val != null && typeof val == "object") {
+        if (seen.indexOf(val) >= 0) {
+            return;
+        }
+        seen.push(val);
+    }
+    return val;
 }
 Player.prototype.CreateLobby = function(eventContent)
 {

@@ -1,49 +1,88 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using SimpleJSON;
 
 public class Connection : MonoBehaviour {
 
-    public int connectionStatus = -1;
     public Button loginButton;
+    public Button createUserButton;
     public int successOrFail; //debug: 0 = successful connection, 1 = fail.
     public Text inputFieldUserName;
     public Text inputFieldPassword;
 
+    private int connectionStatus = -1;
     private float actTime;
     private float loginWaitTime = 5.0f;
     private ServerInterface serverInterface;
+    private JSONNode test;
 
-    void OnAuthenticated()
+    void D_OfflineAuthentication()
     {
-        ServerInterface.Authenticated += Authorised;
+        if (successOrFail == 0)
+        {
+            connectionStatus = 0;
+        }
+        else if (successOrFail == 1)
+        {
+            connectionStatus = 1;
+        }
+
     }
 
-    void OnRejected()
+    void EventSubscribe()
     {
+        ServerInterface.Authenticated += Authorised;
         ServerInterface.Unauthorized += Rejected;
+        ServerInterface.UserCreated += UserCreated;
+        ServerInterface.UserNotCreated += UserNotCreated;
+        ServerInterface.LobbyList += PopulateList;
+        ServerInterface.LobbyCreated += CreateLobby;
+
+    }
+
+    void PopulateList(SimpleJSON.JSONNode result)
+    {
+        test = result;
+        Debug.Log(test);
+    }
+
+    void UserNotCreated(SimpleJSON.JSONNode result)
+    {
+        throw new System.NotImplementedException();
+    }
+
+    void UserCreated(SimpleJSON.JSONNode result)
+    {
+        SendMessage("UserCreationConfirm");
     }
 
     void Authorised(SimpleJSON.JSONNode result)
     {
-        GameObject.Find("LoggingInText").GetComponent<Text>().text = "Connected.";
         connectionStatus = 0;
     }
 
     void Rejected(SimpleJSON.JSONNode result)
     {
-        GameObject.Find("LoggingInText").GetComponent<Text>().text = "Unauthorised.";
         connectionStatus = 1;
     }
 
-    void LobbyConnection()
+
+
+    void RefreshLobbyList()
     {
-        serverInterface.StartAuthentifiedConnection(inputFieldUserName.text, inputFieldPassword.text);
+        serverInterface.ListLobby();
     }
+
+    void CreateLobby(SimpleJSON.JSONNode result)
+    {
+        serverInterface.LeaveLobby();
+    }
+
     // Use this for initialization
     void Start ()
     {
-        loginButton.onClick.AddListener(LobbyConnection);
+        EventSubscribe();
         serverInterface = GetComponent<ServerInterface>();
     }
 
@@ -52,11 +91,12 @@ public class Connection : MonoBehaviour {
     {
         if (connectionStatus == 0)
         {
+            GameObject.Find("LoggingInText").GetComponent<Text>().text = "Connected.";
             SendMessage("LobbyTransition");
         }
         else if (connectionStatus == 1)
         {
-
+            GameObject.Find("LoggingInText").GetComponent<Text>().text = "Unauthorised.";
         }
     }
 }

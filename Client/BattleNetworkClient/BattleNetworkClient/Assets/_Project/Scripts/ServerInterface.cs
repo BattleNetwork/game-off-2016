@@ -242,5 +242,8 @@ public class ServerInterface : MonoBehaviour
             };
         });
     }
+    void OnDestroy()
+    {
+        if (_socket != null) _socket.Close();
+    }
 }
-
