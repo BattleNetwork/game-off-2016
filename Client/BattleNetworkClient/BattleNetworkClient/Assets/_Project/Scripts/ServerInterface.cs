@@ -58,12 +58,13 @@ public class ServerInterface : MonoBehaviour
         Debug.Log(www.text);
         if(!string.IsNullOrEmpty(www.error))
         {
-            UserNotCreated(www.error);
+            UserNotCreated(JSON.Parse("{\"error\": \""+ www.error + "\"}"));
         }
         else
         {
-            JSONNode usercreated = JSON.Parse(www.text);
-            UserCreated(usercreated);
+            JSONNode result = JSON.Parse(www.text);
+            if (result["status"].Value == "error") UserNotCreated(JSON.Parse("{\"error\": \"Problem when adding to database\"}"));
+            UserCreated(result["content"]);
         }
     }
 

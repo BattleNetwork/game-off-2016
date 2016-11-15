@@ -8,7 +8,7 @@ module.exports = function(io, app)
         dbManager.CreatePlayerProfile(req.body.pseudo, req.body.pass, function(err, player)
         {
             if(err || !player) res.json({status:'error', content: null})
-            res.json({status:'ok', content: player});
+            else res.json({status:'ok', content: player});
         });
     })
     
