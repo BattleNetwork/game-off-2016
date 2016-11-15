@@ -20,6 +20,8 @@ public class LoginAnimations : MonoBehaviour {
     public Button createUserButton;
     public Button userCreateOkButton;
     public GameObject panelQuitConfirm;
+    public GameObject panelLobbyReady;
+
 
     private ServerInterface serverInterface;
 
@@ -60,6 +62,12 @@ public class LoginAnimations : MonoBehaviour {
     void CreateLobby()
     {
         serverInterface.CreateLobby(usernameField.GetComponentInChildren<Text>().text);
+
+        panelLobbyReady.SetActive(true);
+        Button cancel = GameObject.Find("ButtonLobbyReadyCancel").GetComponent<Button>();
+        cancel.onClick.AddListener(CancelSearch);
+        serverInterface.CloseConnection();
+
     }
 
     void QuitConfirmation()
@@ -72,7 +80,7 @@ public class LoginAnimations : MonoBehaviour {
     }
     void Quit()
     {
-        Debug.Log("I have quit");
+        serverInterface.CloseConnection();
         Application.Quit();
     }
     void CancelQuit()
@@ -81,8 +89,19 @@ public class LoginAnimations : MonoBehaviour {
     }
     void Logout()
     {
+        serverInterface.CloseConnection();
         SceneManager.LoadScene("MainMenu");
     }
+
+    void WaitingForOpponent()
+    {
+    }
+
+    void CancelSearch()
+    {
+        panelLobbyReady.SetActive(false);
+    }
+
     void LobbyTransition()
     {
         switch(sequence)
@@ -187,22 +206,24 @@ public class LoginAnimations : MonoBehaviour {
     {
         serverInterface = GetComponent<ServerInterface>();
 
-        titleTextText = titleText.GetComponent<Text>();
-        titleTextRect = titleText.GetComponent<RectTransform>();
-        qButtonRect = quitButton.gameObject.GetComponent<RectTransform>();
-        lButtonRect = loginButton.GetComponent<RectTransform>();
-        sButtonRect = settingsButton.GetComponent<RectTransform>();
         panelQuitConfirm.SetActive(false);
         loginListPanel.gameObject.SetActive(false);
         refreshButton.SetActive(false);
         connectButton.SetActive(false);
         createButton.SetActive(false);
         userCreateMessagePanel.SetActive(false);
+        panelLobbyReady.SetActive(false);
+
+        titleTextText = titleText.GetComponent<Text>();
+        titleTextRect = titleText.GetComponent<RectTransform>();
+        qButtonRect = quitButton.gameObject.GetComponent<RectTransform>();
+        lButtonRect = loginButton.GetComponent<RectTransform>();
+        sButtonRect = settingsButton.GetComponent<RectTransform>();
+
         userCreateOkButton.onClick.AddListener(CloseUserCreation);
         loginButton.GetComponent<Button>().onClick.AddListener(Login);
         createUserButton.GetComponent<Button>().onClick.AddListener(UserCreation);
         quitButton.GetComponent<Button>().onClick.AddListener(QuitConfirmation);
-
         refreshButton.GetComponent<Button>().onClick.AddListener(RefreshList);
         createButton.GetComponent<Button>().onClick.AddListener(CreateLobby);
     }

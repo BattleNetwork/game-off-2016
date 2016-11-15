@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using SimpleJSON;
+using System.Collections.Generic;
 
 public class Connection : MonoBehaviour {
 
@@ -10,10 +11,14 @@ public class Connection : MonoBehaviour {
     public int successOrFail; //debug: 0 = successful connection, 1 = fail.
     public Text inputFieldUserName;
     public Text inputFieldPassword;
+    public GameObject entry;
+    public Text entryText;
+    
 
     private int connectionStatus = -1;
     private ServerInterface serverInterface;
     private JSONNode test;
+    private List<string> entryList; 
 
     void D_OfflineAuthentication()
     {
@@ -41,9 +46,10 @@ public class Connection : MonoBehaviour {
 
     void PopulateList(JSONArray result)
     {
-        foreach(JSONNode i in result.Childs)
+        Debug.Log(result);
+        foreach (JSONNode i in result.Childs)
         {
-            Debug.Log(i["name"]);
+            entryList.Add(i["name"].Value);
         }
     }
 
@@ -67,8 +73,6 @@ public class Connection : MonoBehaviour {
         connectionStatus = 1;
     }
 
-
-
     void RefreshLobbyList()
     {
         serverInterface.ListLobby();
@@ -77,9 +81,8 @@ public class Connection : MonoBehaviour {
 
     void CreateLobby(SimpleJSON.JSONNode result)
     {
-        serverInterface.LeaveLobby();
-    }
 
+    }
     // Use this for initialization
     void Start ()
     {
@@ -99,5 +102,7 @@ public class Connection : MonoBehaviour {
         {
             GameObject.Find("LoggingInText").GetComponent<Text>().text = "Unauthorised.";
         }
+        Debug.Log(entryList);
+
     }
 }
