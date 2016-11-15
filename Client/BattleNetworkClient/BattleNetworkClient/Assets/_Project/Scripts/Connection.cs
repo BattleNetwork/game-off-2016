@@ -41,11 +41,11 @@ public class Connection : MonoBehaviour {
 
     void PopulateList(JSONNode result)
     {
-        JSONArray test = new JSONArray();
-        test = (JSONArray)result;
-        foreach(string i in test)
+        JSONArray test = result.AsArray;
+
+        foreach(JSONNode i in test.Childs)
         {
-            Debug.Log(i);
+            Debug.Log(i["name"]);
         }
     }
 
