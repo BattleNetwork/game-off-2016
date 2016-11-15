@@ -10,30 +10,31 @@ public class ServerInterface : MonoBehaviour
     private SocketIOClient.Client _socket;
 
     #region Events
-    public delegate void NetworkEvent(JSONNode result);
-    public delegate void NetworkErrorEvent(string error);
+    public delegate void NetworkResult(JSONNode result);
+    public delegate void NetworkListResult(JSONArray result);
+    public delegate void NetworkError(string error);
 
-    public static event NetworkEvent UserCreated;
-    public static event NetworkEvent UserNotCreated;
-    public static event NetworkEvent Authenticated;
-    public static event NetworkEvent Unauthorized;
-    public static event NetworkEvent LobbyList;
-    public static event NetworkEvent LobbyCreated;
-    public static event NetworkEvent LobbyJoined;
-    public static event NetworkEvent LobbyLeft;
-    public static event NetworkEvent ReadySet;
-    public static event NetworkEvent UnReadySet;
-    public static event NetworkEvent CantUnready;
-    public static event NetworkEvent GoInGame;
-    public static event NetworkEvent Countdown;
-    public static event NetworkEvent PlayerJoined;
-    public static event NetworkEvent PlayerLeft;
-    public static event NetworkEvent OpponentReadyUp;
-    public static event NetworkEvent OpponentUnready;
-    public static event NetworkEvent Update;
-    public static event NetworkEvent Gameover;
-    public static event NetworkEvent Result;
-    public static event NetworkErrorEvent Error;
+    public static event NetworkResult UserCreated;
+    public static event NetworkResult UserNotCreated;
+    public static event NetworkResult Authenticated;
+    public static event NetworkResult Unauthorized;
+    public static event NetworkListResult LobbyList;
+    public static event NetworkResult LobbyCreated;
+    public static event NetworkResult LobbyJoined;
+    public static event NetworkResult LobbyLeft;
+    public static event NetworkResult ReadySet;
+    public static event NetworkResult UnReadySet;
+    public static event NetworkResult CantUnready;
+    public static event NetworkResult GoInGame;
+    public static event NetworkResult Countdown;
+    public static event NetworkResult PlayerJoined;
+    public static event NetworkResult PlayerLeft;
+    public static event NetworkResult OpponentReadyUp;
+    public static event NetworkResult OpponentUnready;
+    public static event NetworkResult Update;
+    public static event NetworkResult Gameover;
+    public static event NetworkResult Result;
+    public static event NetworkError Error;
     #endregion
 
 
@@ -145,7 +146,7 @@ public class ServerInterface : MonoBehaviour
                         
                         JSONNode resultjson = JSONNode.Parse(result.Encoded);
                         JSONArray arguments = resultjson["args"].AsArray;
-                        JSONNode actualresult = arguments[0];
+                        JSONArray actualresult = arguments[0].AsArray;
                         LobbyList(actualresult);
                     }
                 });

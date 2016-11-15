@@ -39,11 +39,9 @@ public class Connection : MonoBehaviour {
 
     }
 
-    void PopulateList(JSONNode result)
+    void PopulateList(JSONArray result)
     {
-        JSONArray test = result.AsArray;
-
-        foreach(JSONNode i in test.Childs)
+        foreach(JSONNode i in result.Childs)
         {
             Debug.Log(i["name"]);
         }
