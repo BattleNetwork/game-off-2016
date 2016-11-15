@@ -12,8 +12,6 @@ public class Connection : MonoBehaviour {
     public Text inputFieldPassword;
 
     private int connectionStatus = -1;
-    private float actTime;
-    private float loginWaitTime = 5.0f;
     private ServerInterface serverInterface;
     private JSONNode test;
 
@@ -41,10 +39,14 @@ public class Connection : MonoBehaviour {
 
     }
 
-    void PopulateList(SimpleJSON.JSONNode result)
+    void PopulateList(JSONNode result)
     {
-        test = result;
-        Debug.Log(test);
+        JSONArray test = new JSONArray();
+        test = (JSONArray)result;
+        foreach(string i in test)
+        {
+            Debug.Log(i);
+        }
     }
 
     void UserNotCreated(SimpleJSON.JSONNode result)
@@ -72,6 +74,7 @@ public class Connection : MonoBehaviour {
     void RefreshLobbyList()
     {
         serverInterface.ListLobby();
+
     }
 
     void CreateLobby(SimpleJSON.JSONNode result)

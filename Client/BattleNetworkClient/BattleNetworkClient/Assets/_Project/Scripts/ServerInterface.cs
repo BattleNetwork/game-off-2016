@@ -141,7 +141,7 @@ public class ServerInterface : MonoBehaviour
                 {
                     Debug.Log("lobby list // " + result.Json.ToJsonString() + "//");
                     if (LobbyList != null)
-                        LobbyList(JSONNode.Parse(result.Json.ToJsonString()));
+                        LobbyList(JSONArray.Parse(result.Json.ToJsonString()));
                 });
                 _socket.On("lobbycreated", (result) =>
                 {
