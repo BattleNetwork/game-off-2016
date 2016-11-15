@@ -1,3 +1,5 @@
+_ = require("underscore");
+
 var Player = function(profil, socket) {
     this.profil = profil;
     this.socket = socket;
@@ -61,19 +63,19 @@ Player.prototype.ClearSocketEvents = function()
 
 Player.prototype.ListLobby = function(eventContent)
 {
-    this.emit('lobbylist', JSON.stringify(this.lobbyManager.lobbyList, ["name"]));
+    var result = _.map(this.lobbyManager.lobbyList, function(val, index)
+    {
+        return _.mapObject(val, replacer)
+    });
+    //var result = JSON.parse(JSON.stringify(this.lobbyManager.lobbyList, ["name"]));
+    this.emit('lobbylist', result);
 }
 
-seen = [];
-function replacer(key, val) {
-   if (val != null && typeof val == "object") {
-        if (seen.indexOf(val) >= 0) {
-            return;
-        }
-        seen.push(val);
-    }
-    return val;
+function replacer(val, key) {
+   if(key == "players") return val.length;
+   else return val;
 }
+
 Player.prototype.CreateLobby = function(eventContent)
 {
     this.lobby = this.lobbyManager.AddLobby(eventContent.lobbyName);

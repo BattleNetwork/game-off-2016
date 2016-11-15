@@ -49,7 +49,6 @@ public class LoginAnimations : MonoBehaviour {
 
     void Login()
     {
-        Debug.Log(usernameField.GetComponentInChildren<Text>().text);
         serverInterface.StartAuthentifiedConnection(usernameField.GetComponentInChildren<Text>().text, passwordField.GetComponentInChildren<Text>().text);
     }
 
