@@ -55,7 +55,8 @@ public class Connection : MonoBehaviour {
 
     void UserNotCreated(SimpleJSON.JSONNode result)
     {
-        throw new System.NotImplementedException();
+        Debug.Log("USER NOT CREATED");
+        Debug.Log(result);
     }
 
     void UserCreated(SimpleJSON.JSONNode result)
