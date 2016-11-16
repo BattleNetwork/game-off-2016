@@ -103,7 +103,7 @@ public class Connection : MonoBehaviour {
         {
             GameObject.Find("LoggingInText").GetComponent<Text>().text = "Unauthorised.";
         }
-        Debug.Log(entryList);
+        //Debug.Log(entryList);
 
     }
 }

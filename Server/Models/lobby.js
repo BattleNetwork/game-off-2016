@@ -97,4 +97,15 @@ Lobby.prototype.Broadcast = function(eventName, eventArgs)
         console.log("ERROR WHILE BROADCASTING");
     });
 }
+
+Lobby.prototype.RemovePlayer = function(player)
+{
+    this.players.splice(this.players.indexOf(player), 1);
+}
+
+Lobby.prototype.IsEmpty = function()
+{
+    if(this.players.length > 0) return false;
+    return true;
+}
 module.exports = Lobby;

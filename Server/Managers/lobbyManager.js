@@ -25,4 +25,9 @@ var CheckLobby = function(lobby)
     return lobby.name == name;
 };
 
+LobbyManager.prototype.RemoveLobby = function(lobby)
+{
+    this.lobbyList.splice(this.lobbyList.indexOf(lobby), 1);
+}
+
 exports.LobbyManager = new LobbyManager();
