@@ -20,6 +20,18 @@ Player.prototype.SetStatusAuthenticated = function()
     this.status = "authenticated";
 }
 
+Player.prototype.QuitLobby = function()
+{
+    if(this.socket.lobby != null)
+    {
+        this.socket.lobby.RemovePlayer(this);
+        if(this.socket.lobby.IsEmpty())
+        {
+            this.socket.lobbyManager.RemoveLobby(this.socket.lobby);
+        }
+    }
+}
+
 Player.prototype.SetStatusInLobby = function()
 {
     this.ClearSocketEvents();
@@ -103,6 +115,7 @@ Player.prototype.JoinLobby = function(eventContent)
 Player.prototype.LeaveLobby = function(eventContent)
 {
     this.leave(this.room);
+    this.player.QuitLobby();
     this.player.SetStatusAuthenticated();
     this.emit('lobbyleft', null);
 }

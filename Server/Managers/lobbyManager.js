@@ -17,12 +17,17 @@ LobbyManager.prototype.LobbyExist = function(name) {
 
 LobbyManager.prototype.GetLobby = function(name)
 {
-    return this.lobbyList.find(CheckLobby);
+    return this.lobbyList.find(CheckLobby, name);
 };
 
-var CheckLobby = function(lobby)
+var CheckLobby = function(lobby, name)
 {
     return lobby.name == name;
 };
+
+LobbyManager.prototype.RemoveLobby = function(lobby)
+{
+    this.lobbyList.splice(this.lobbyList.indexOf(lobby), 1);
+}
 
 exports.LobbyManager = new LobbyManager();
