@@ -24,7 +24,7 @@ PlayerManager.prototype.DisconnectPlayer= function(socketid)
             console.log("Error while disconnecting player");
             return;
         }
-        playerToDisconnect.QuitLobby();
+        // playerToDisconnect.QuitLobby();
         playerList.splice(playerList.indexOf(playerToDisconnect), 1);
     });
 }
