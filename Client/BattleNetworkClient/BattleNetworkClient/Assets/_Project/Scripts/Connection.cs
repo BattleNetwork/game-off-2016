@@ -11,14 +11,14 @@ public class Connection : MonoBehaviour {
     public int successOrFail; //debug: 0 = successful connection, 1 = fail.
     public Text inputFieldUserName;
     public Text inputFieldPassword;
-    public GameObject entry;
-    public Text entryText;
-    
+    public GameObject lobbyEntry;
+    public GameObject panelLobbyList;
+
+
 
     private int connectionStatus = -1;
     private ServerInterface serverInterface;
-    private JSONNode test;
-    private List<string> entryList; 
+    private List<string> serverList;
 
     void D_OfflineAuthentication()
     {
@@ -39,18 +39,56 @@ public class Connection : MonoBehaviour {
         ServerInterface.Unauthorized += Rejected;
         ServerInterface.UserCreated += UserCreated;
         ServerInterface.UserNotCreated += UserNotCreated;
-        ServerInterface.LobbyList += PopulateList;
+        ServerInterface.LobbyList += CreateList;
         ServerInterface.LobbyCreated += CreateLobby;
 
     }
 
-    void PopulateList(JSONArray result)
+    void CreateList(JSONArray result)
     {
-        Debug.Log(result);
         foreach (JSONNode i in result.Childs)
         {
-            entryList.Add(i["name"].Value);
+            serverList.Add(i["name"]);
         }
+    }
+
+    IEnumerator PopulateList(List<string> serverList)
+    {
+        Debug.Log(serverList);
+        GameObject lobbyEntryButton = new GameObject();
+        lobbyEntryButton.name = "LobbyEntryButton";
+        lobbyEntryButton.AddComponent<RectTransform>();
+        RectTransform lobbyEntryButtonRect = lobbyEntryButton.GetComponent<RectTransform>();
+        //lobbyEntryButton.AddComponent<Button>();
+        //lobbyEntryButton.AddComponent<Text>();
+        //lobbyEntryButton.GetComponent<Text>().font = Resources.Load<Font>("Fonts/chintzy");
+        //lobbyEntryButton.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+        //lobbyEntryButton.name = "lobbyEntryButton";
+        lobbyEntryButtonRect.SetParent(panelLobbyList.transform);
+        lobbyEntryButtonRect.anchorMin = new Vector2(0.05f, 0.8f);
+        lobbyEntryButtonRect.anchorMax = new Vector2(0.7f, 0.9f);
+        lobbyEntryButtonRect.localScale = Vector3.one;
+        lobbyEntryButtonRect.sizeDelta = Vector3.zero;
+        lobbyEntryButtonRect.anchoredPosition3D = Vector3.zero;
+        Vector2 offset = new Vector2(0f, 0f);
+
+
+
+        GameObject lobbyEntryCopy = lobbyEntry;
+        for (int i = serverList.Count - 1; i >= 0; i--)
+        {
+            Instantiate(lobbyEntry, 
+                        new Vector3(lobbyEntryButtonRect.position.x, 
+                                    lobbyEntryButtonRect.position.y + offset.y, 
+                                    lobbyEntryButtonRect.position.z),
+                        Quaternion.identity, 
+                        panelLobbyList.transform);
+            lobbyEntry.GetComponent<Text>().text = serverList[i];
+            serverList.RemoveAt(i);
+            offset.y -= 0.6f;
+        }
+        StopCoroutine("PopulateList");
+        yield return null;
     }
 
     void UserNotCreated(SimpleJSON.JSONNode result)
@@ -89,11 +127,16 @@ public class Connection : MonoBehaviour {
     {
         EventSubscribe();
         serverInterface = GetComponent<ServerInterface>();
+        serverList = new List<string>();
     }
 
     // Update is called once per frame
     void Update ()
     {
+        if(serverList.Count != 0)
+        {
+            StartCoroutine(PopulateList(serverList));
+        }
         if (connectionStatus == 0)
         {
             GameObject.Find("LoggingInText").GetComponent<Text>().text = "Connected.";
@@ -103,7 +146,5 @@ public class Connection : MonoBehaviour {
         {
             GameObject.Find("LoggingInText").GetComponent<Text>().text = "Unauthorised.";
         }
-        Debug.Log(entryList);
-
     }
 }
