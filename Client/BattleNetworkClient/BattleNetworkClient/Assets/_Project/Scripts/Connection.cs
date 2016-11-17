@@ -59,36 +59,37 @@ public class Connection : MonoBehaviour {
         lobbyEntryButton.name = "LobbyEntryButton";
         lobbyEntryButton.AddComponent<RectTransform>();
         RectTransform lobbyEntryButtonRect = lobbyEntryButton.GetComponent<RectTransform>();
-        //lobbyEntryButton.AddComponent<Button>();
-        //lobbyEntryButton.AddComponent<Text>();
-        //lobbyEntryButton.GetComponent<Text>().font = Resources.Load<Font>("Fonts/chintzy");
-        //lobbyEntryButton.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
-        //lobbyEntryButton.name = "lobbyEntryButton";
+        lobbyEntryButton.AddComponent<Button>();
+        lobbyEntryButton.AddComponent<Text>();
+        lobbyEntryButton.GetComponent<Text>().font = Resources.Load<Font>("Fonts/chintzy");
+        lobbyEntryButton.GetComponent<Text>().alignment = TextAnchor.MiddleLeft;
+        lobbyEntryButton.GetComponent<Text>().fontSize = 14;
+        Text lobbyEntryText = lobbyEntryButton.GetComponent<Text>();
         lobbyEntryButtonRect.SetParent(panelLobbyList.transform);
         lobbyEntryButtonRect.anchorMin = new Vector2(0.05f, 0.8f);
         lobbyEntryButtonRect.anchorMax = new Vector2(0.7f, 0.9f);
         lobbyEntryButtonRect.localScale = Vector3.one;
         lobbyEntryButtonRect.sizeDelta = Vector3.zero;
         lobbyEntryButtonRect.anchoredPosition3D = Vector3.zero;
+
         Vector2 offset = new Vector2(0f, 0f);
-
-
-
-        GameObject lobbyEntryCopy = lobbyEntry;
         for (int i = serverList.Count - 1; i >= 0; i--)
         {
-            Instantiate(lobbyEntry, 
-                        new Vector3(lobbyEntryButtonRect.position.x, 
-                                    lobbyEntryButtonRect.position.y + offset.y, 
-                                    lobbyEntryButtonRect.position.z),
-                        Quaternion.identity, 
-                        panelLobbyList.transform);
-            lobbyEntry.GetComponent<Text>().text = serverList[i];
+            GameObject entryCopy = (GameObject)Instantiate(lobbyEntryButton,new Vector3(lobbyEntryButtonRect.position.x, lobbyEntryButtonRect.position.y + offset.y, lobbyEntryButtonRect.position.z), Quaternion.identity, panelLobbyList.transform);
+            entryCopy.GetComponent<Text>().text = serverList[i];
+            string joinArg = entryCopy.GetComponent<Text>().text;
+            AddListener(entryCopy, joinArg);
             serverList.RemoveAt(i);
             offset.y -= 0.6f;
         }
+        Destroy(lobbyEntryButton);
         StopCoroutine("PopulateList");
         yield return null;
+    }
+
+    void AddListener(GameObject button, string lobbyName)
+    {
+        button.GetComponent<Button>().onClick.AddListener(() => JoinLobby(lobbyName));
     }
 
     void UserNotCreated(SimpleJSON.JSONNode result)
@@ -100,6 +101,11 @@ public class Connection : MonoBehaviour {
     void UserCreated(SimpleJSON.JSONNode result)
     {
         SendMessage("UserCreationConfirm");
+    }
+
+    void JoinLobby(string lobbyName)
+    {
+        serverInterface.JoinLobby(lobbyName);
     }
 
     void Authorised(SimpleJSON.JSONNode result)
