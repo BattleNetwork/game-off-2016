@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
 
-public class ServerInterface : MonoBehaviour
+public class ServerInterface : Singleton<ServerInterface>
 {
     public string BaseAddress;
      
     private SocketIOClient.Client _socket;
+
+    protected ServerInterface() { }
 
     #region Events
     public delegate void NetworkResult(JSONNode result);
