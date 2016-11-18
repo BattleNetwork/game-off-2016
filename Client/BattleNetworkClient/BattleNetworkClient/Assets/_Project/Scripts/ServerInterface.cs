@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
+using System;
 
 public class ServerInterface : Singleton<ServerInterface>
 {
@@ -109,7 +110,33 @@ public class ServerInterface : Singleton<ServerInterface>
         Debug.Log("Closing");
 
         _socket.Close();
+        ClearEvents();
     }
+
+    private void ClearEvents()
+    {
+        UserCreated = null;
+        UserNotCreated = null;
+        Authenticated = null;
+        Unauthorized = null;
+        LobbyList = null;
+        LobbyCreated = null;
+        LobbyJoined = null;
+        LobbyLeft = null;
+        ReadySet = null;
+        UnReadySet = null;
+        CantUnready = null;
+        GoInGame = null;
+        Countdown = null;
+        PlayerJoined = null;
+        PlayerLeft = null;
+        OpponentReadyUp = null;
+        OpponentUnready = null;
+        Update = null;
+        Gameover = null;
+        Result = null;
+        Error = null;
+}
 
     public void LeaveLobby()
     {
