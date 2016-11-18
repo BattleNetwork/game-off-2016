@@ -279,8 +279,10 @@ public class ServerInterface : Singleton<ServerInterface>
             };
         });
     }
-    void OnDestroy()
+
+    new void OnDestroy()
     {
+        base.OnDestroy();
         if (_socket != null) _socket.Close();
     }
 }
