@@ -41,7 +41,12 @@ public class Connection : MonoBehaviour {
         ServerInterface.UserNotCreated += UserNotCreated;
         ServerInterface.LobbyList += CreateList;
         ServerInterface.LobbyCreated += CreateLobby;
+        ServerInterface.LobbyJoined += EnterLobby;
+    }
 
+    void EnterLobby(JSONNode result)
+    {
+        SendMessage("Readyup");
     }
 
     void CreateList(JSONArray result)

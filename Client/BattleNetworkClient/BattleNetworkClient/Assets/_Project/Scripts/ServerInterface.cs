@@ -2,12 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
+using System;
 
-public class ServerInterface : MonoBehaviour
+public class ServerInterface : Singleton<ServerInterface>
 {
     public string BaseAddress;
      
     private SocketIOClient.Client _socket;
+
+    protected ServerInterface() { }
 
     #region Events
     public delegate void NetworkResult(JSONNode result);
@@ -107,7 +110,33 @@ public class ServerInterface : MonoBehaviour
         Debug.Log("Closing");
 
         _socket.Close();
+        ClearEvents();
     }
+
+    private void ClearEvents()
+    {
+        UserCreated = null;
+        UserNotCreated = null;
+        Authenticated = null;
+        Unauthorized = null;
+        LobbyList = null;
+        LobbyCreated = null;
+        LobbyJoined = null;
+        LobbyLeft = null;
+        ReadySet = null;
+        UnReadySet = null;
+        CantUnready = null;
+        GoInGame = null;
+        Countdown = null;
+        PlayerJoined = null;
+        PlayerLeft = null;
+        OpponentReadyUp = null;
+        OpponentUnready = null;
+        Update = null;
+        Gameover = null;
+        Result = null;
+        Error = null;
+}
 
     public void LeaveLobby()
     {
@@ -250,8 +279,10 @@ public class ServerInterface : MonoBehaviour
             };
         });
     }
-    void OnDestroy()
+
+    new void OnDestroy()
     {
+        base.OnDestroy();
         if (_socket != null) _socket.Close();
     }
 }

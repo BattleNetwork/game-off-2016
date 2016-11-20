@@ -34,6 +34,12 @@ public class LoginAnimations : MonoBehaviour {
     private RectTransform titleTextRect;
     private float alpha;
 
+    void ReadyUp()
+    {
+        panelLobbyReady.SetActive(true);
+
+    }
+
     void UserCreationConfirm()
     {
         userCreateMessagePanel.SetActive(true);
