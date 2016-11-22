@@ -11,18 +11,20 @@ LobbyManager.prototype.AddLobby = function(name) {
 };
 
 LobbyManager.prototype.LobbyExist = function(name) {
-   
-    return this.lobbyList.find(CheckLobby) != undefined;
+   var lobby = this.lobbyList.find(CheckLobby, [name]) ;
+   var exist = lobby != undefined;
+    return exist;
 };
 
 LobbyManager.prototype.GetLobby = function(name)
 {
-    return this.lobbyList.find(CheckLobby, name);
+    
+    return this.lobbyList.find(CheckLobby, [name]);
 };
 
-var CheckLobby = function(lobby, name)
+var CheckLobby = function(lobby)
 {
-    return lobby.name == name;
+    return lobby.name == this[0];
 };
 
 LobbyManager.prototype.RemoveLobby = function(lobby)

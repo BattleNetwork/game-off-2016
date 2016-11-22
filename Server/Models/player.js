@@ -27,7 +27,7 @@ Player.prototype.QuitLobby = function()
         this.socket.lobby.RemovePlayer(this);
         if(this.socket.lobby.IsEmpty())
         {
-            this.socket.lobbyManager.RemoveLobby(this.socket.lobby);
+            //this.socket.lobbyManager.RemoveLobby(this.socket.lobby);
         }
     }
 }
