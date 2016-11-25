@@ -1,11 +1,13 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System;
 using UnityEngine.UI;
+
 
 public class InGameView : MonoBehaviour {
 
     public InGameController igCtrl;
     public Text console;
+    public PopupOneButton oneButtonPopup;
 	
 	// Update is called once per frame
 	void Update () {
@@ -13,7 +15,9 @@ public class InGameView : MonoBehaviour {
         {
             if(!string.IsNullOrEmpty(igCtrl.IgModel.ErrorMessage))
             {
-                //rise popup error (must be added on the scene)
+                Action errorAction = igCtrl.ErrorCallback;
+                oneButtonPopup.Configure("Error", igCtrl.IgModel.ErrorMessage, "Ok", errorAction);
+                igCtrl.IgModel.ErrorMessage = "";// so we don't rise it again when the next dirty state is set
                 return;
             }
 
@@ -34,4 +38,6 @@ public class InGameView : MonoBehaviour {
     {
         igCtrl.SendCommand(console.text);
     }
+
+    
 }

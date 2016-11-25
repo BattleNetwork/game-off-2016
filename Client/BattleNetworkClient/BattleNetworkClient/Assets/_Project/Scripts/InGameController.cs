@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using SimpleJSON;
 using System;
@@ -45,5 +46,11 @@ public class InGameController : MonoBehaviour {
         string command = newConsoleContent.Remove(newConsoleContent.IndexOf(igModel.Console), igModel.Console.Length);
         //must add verification (at least empty command and command beginning with some char?)
         ServerInterface.Instance.SendCommand(command);
+    }
+
+    public void ErrorCallback()
+    {
+        //maybe a fade to black would be good here
+        SceneManager.LoadScene("MainMenu");
     }
 }
