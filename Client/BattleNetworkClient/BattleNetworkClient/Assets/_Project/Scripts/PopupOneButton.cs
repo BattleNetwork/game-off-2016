@@ -12,7 +12,7 @@ public class PopupOneButton : MonoBehaviour
 
     private Action _buttonCallback;
 
-    internal void Configure(string title, string message, string buttonText, Action buttonCallback)
+    public void Configure(string title, string message, string buttonText, Action buttonCallback)
     {
         Title.text = title;
         Message.text = message;
@@ -20,13 +20,13 @@ public class PopupOneButton : MonoBehaviour
         _buttonCallback = buttonCallback;
     }
 
-    internal void Show()
+    public void Show()
     {
         Root.gameObject.SetActive(true);
         Root.DOFade(1.0f, 0.2f);
     }
 
-    internal void Hide()
+    public void Hide()
     {
         Root.DOFade(0f, 0.2f).OnComplete(() =>
         {

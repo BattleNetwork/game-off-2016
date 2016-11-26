@@ -11,7 +11,7 @@ public class ScoreWindow : MonoBehaviour
     private Action _buttonCallback;
 
 
-    internal void Show(int winner, int team, Action buttonCallback)
+    public void Show(int winner, int team, Action buttonCallback)
     {
         _buttonCallback = buttonCallback;
         if (team == winner)
@@ -30,7 +30,7 @@ public class ScoreWindow : MonoBehaviour
         WinnerAnimation.SetActive(true);
     }
 
-    internal void Hide()
+    public void Hide()
     {
         Root.DOFade(0f, 0.2f).OnComplete(() =>
         {
