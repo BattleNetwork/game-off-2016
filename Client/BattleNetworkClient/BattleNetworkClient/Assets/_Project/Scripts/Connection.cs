@@ -15,23 +15,11 @@ public class Connection : MonoBehaviour {
     public GameObject panelLobbyList;
 
 
-
+    private string lobbyName;
     private int connectionStatus = -1;
+    private int sendMessageLocal = 0;
     private ServerInterface serverInterface;
     private List<string> serverList;
-
-    void D_OfflineAuthentication()
-    {
-        if (successOrFail == 0)
-        {
-            connectionStatus = 0;
-        }
-        else if (successOrFail == 1)
-        {
-            connectionStatus = 1;
-        }
-
-    }
 
     void EventSubscribe()
     {
@@ -46,9 +34,17 @@ public class Connection : MonoBehaviour {
 
     void EnterLobby(JSONNode result)
     {
-        SendMessage("Readyup");
+        lobbyName = result["name"];
+        sendMessageLocal = 1;
     }
 
+    IEnumerator SendMessageLocal()
+    {
+        SendMessage("ReadyUp", lobbyName);
+        StopCoroutine(SendMessageLocal());
+        sendMessageLocal = 0;
+        yield return null;
+    }
     void CreateList(JSONArray result)
     {
         foreach (JSONNode i in result.Childs)
@@ -59,7 +55,6 @@ public class Connection : MonoBehaviour {
 
     IEnumerator PopulateList(List<string> serverList)
     {
-        Debug.Log(serverList);
         GameObject lobbyEntryButton = new GameObject();
         lobbyEntryButton.name = "LobbyEntryButton";
         lobbyEntryButton.AddComponent<RectTransform>();
@@ -94,6 +89,7 @@ public class Connection : MonoBehaviour {
 
     void AddListener(GameObject button, string lobbyName)
     {
+        Debug.Log(lobbyName);
         button.GetComponent<Button>().onClick.AddListener(() => JoinLobby(lobbyName));
     }
 
@@ -144,6 +140,11 @@ public class Connection : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
+        if (sendMessageLocal == 1)
+        {
+            StartCoroutine(SendMessageLocal());
+        }
+
         if(serverList.Count != 0)
         {
             StartCoroutine(PopulateList(serverList));

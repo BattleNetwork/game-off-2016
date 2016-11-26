@@ -34,8 +34,9 @@ public class LoginAnimations : MonoBehaviour {
     private RectTransform titleTextRect;
     private float alpha;
 
-    void ReadyUp()
+    void ReadyUp(string playerName)
     {
+        GameObject.Find("TextOpponent").GetComponent<Text>().text = GameObject.Find("TextOpponent").GetComponent<Text>().text + playerName;
         panelLobbyReady.SetActive(true);
 
     }
