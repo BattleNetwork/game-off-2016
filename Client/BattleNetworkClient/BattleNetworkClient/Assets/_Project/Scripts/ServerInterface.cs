@@ -280,6 +280,13 @@ public class ServerInterface : Singleton<ServerInterface>
         });
     }
 
+    public void SendCommand(string command)
+    {
+        Dictionary<string, string> args = new Dictionary<string, string>();
+        args.Add("command", command);
+        _socket.Emit("command", args);
+    }
+
     new void OnDestroy()
     {
         base.OnDestroy();
