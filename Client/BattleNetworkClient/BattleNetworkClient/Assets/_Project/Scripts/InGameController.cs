@@ -21,11 +21,12 @@ public class InGameController : MonoBehaviour {
         ServerInterface.Gameover += GameOver;
         ServerInterface.PlayerLeft += OpponentLeft;
         ServerInterface.Result += CommandResult;
+        ServerInterface.Countdown += Countdown;
     }
 
     private void CommandResult(JSONNode result)
     {
-        igModel.Console += '\n' + result.AsArray[0]["commandResult"];//must adapt server result
+        igModel.ConsoleResult += '\n' + result.AsArray[0]["commandResult"];//must adapt server result
         igModel.IsDirty = true;
     }
 
@@ -41,6 +42,12 @@ public class InGameController : MonoBehaviour {
         igModel.IsDirty = true;
     }
 
+    private void Countdown(JSONNode result)
+    {
+        igModel.Countdown = result.AsArray[0]["countdown"].AsFloat;//must adapt server result
+        igModel.Team = result.AsArray[0]["team"].AsInt;//must adapt server result
+    }
+
     public void SendCommand(string newConsoleContent)
     {
         string command = newConsoleContent.Remove(newConsoleContent.IndexOf(igModel.Console), igModel.Console.Length);
@@ -49,6 +56,16 @@ public class InGameController : MonoBehaviour {
     }
 
     public void ErrorCallback()
+    {
+        ReturnToMenu();
+    }
+
+    public void GameOverCallback()
+    {
+        ReturnToMenu();
+    }
+
+    private void ReturnToMenu()
     {
         //maybe a fade to black would be good here
         SceneManager.LoadScene("MainMenu");

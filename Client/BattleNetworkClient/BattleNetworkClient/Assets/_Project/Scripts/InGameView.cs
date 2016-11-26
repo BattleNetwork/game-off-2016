@@ -1,43 +1,73 @@
 ﻿using UnityEngine;
 using System;
 using UnityEngine.UI;
-
+using System.Collections;
 
 public class InGameView : MonoBehaviour {
 
-    public InGameController igCtrl;
-    public Text console;
-    public PopupOneButton oneButtonPopup;
+    public InGameController IgCtrl;
+    public InputField Console;
+    public PopupOneButton OneButtonPopup;
+    public ScoreWindow ScoreAnimation;
+
+    void Start()
+    {
+        Console.Select();
+        Console.ActivateInputField();
+    }
 	
 	// Update is called once per frame
 	void Update () {
-	    if(igCtrl.IgModel.IsDirty)
+	    if(IgCtrl.IgModel.IsDirty && !IgCtrl.IgModel.IsGameover)
         {
-            if(!string.IsNullOrEmpty(igCtrl.IgModel.ErrorMessage))
+            if(!string.IsNullOrEmpty(IgCtrl.IgModel.ErrorMessage))
             {
-                Action errorAction = igCtrl.ErrorCallback;
-                oneButtonPopup.Configure("Error", igCtrl.IgModel.ErrorMessage, "Ok", errorAction);
-                igCtrl.IgModel.ErrorMessage = "";// so we don't rise it again when the next dirty state is set
+                Action errorAction = IgCtrl.ErrorCallback;
+                OneButtonPopup.Configure("Error", IgCtrl.IgModel.ErrorMessage, "Ok", errorAction);
+                IgCtrl.IgModel.ErrorMessage = "";// so we don't rise it again when the next dirty state is set
+                OneButtonPopup.Show();
                 return;
             }
 
-            if(igCtrl.IgModel.Winner != 0)
+            if(IgCtrl.IgModel.Winner != 0)
             {
-                //we've got a winner => show result (must be added to the scene)
+                Action gameOverAction = IgCtrl.GameOverCallback;
+                ScoreAnimation.Show(IgCtrl.IgModel.Winner, IgCtrl.IgModel.Team, gameOverAction);
                 return;
             }
 
-            //sinon c'est qu'on a un retour de command 
-            //donc on met la console a jour
+            if(!string.IsNullOrEmpty(IgCtrl.IgModel.ConsoleResult))
+            {
 
-            igCtrl.IgModel.IsDirty = false;
+                StartCoroutine(ConsoleLineByLineDisplay(IgCtrl.IgModel.ConsoleResult));
+                IgCtrl.IgModel.ConsoleResult = "";
+                
+            }
+
+            IgCtrl.IgModel.IsDirty = false;
         }
 	}
 
-    public void SubmitCommand()
+    private IEnumerator ConsoleLineByLineDisplay(string toAdd)
     {
-        igCtrl.SendCommand(console.text);
+        string[] lines = toAdd.Split('\n');
+        int actualLine = 0;
+        while (actualLine < lines.Length)
+        {
+            Console.text += '\n' + lines[actualLine];
+            actualLine++;
+            yield return new WaitForSeconds(0.5f);
+        }
+
+        IgCtrl.IgModel.Console = Console.text;
+        Console.interactable = true;
+        Console.Select();
+        Console.ActivateInputField();
     }
 
-    
+    public void SubmitCommand()
+    {
+        Console.interactable = false;
+        IgCtrl.SendCommand(Console.text);
+    }
 }

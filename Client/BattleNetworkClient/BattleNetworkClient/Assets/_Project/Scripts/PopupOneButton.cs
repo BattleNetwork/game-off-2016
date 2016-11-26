@@ -34,9 +34,4 @@ public class PopupOneButton : MonoBehaviour
             _buttonCallback();
         });
     }
-
-    internal void ClickButton()
-    {
-        
-    }
 }
