@@ -18,8 +18,9 @@ public class MenuController : MonoBehaviour {
 
     private void Unauthorized(JSONNode result)
     {
-        //rise popup;
         Debug.Log(result);
+        GameModel.Instance.Menu.ErrorMessage = result["error"];
+        GameModel.Instance.Menu.IsDirty = true;
     }
 
     private void Authenticated(JSONNode result)
@@ -43,5 +44,7 @@ public class MenuController : MonoBehaviour {
     private void Error(string error)
     {
         Debug.Log("ERROR : " + error);
+        GameModel.Instance.Menu.ErrorMessage = error;
+        GameModel.Instance.Menu.IsDirty = true;
     }
 }

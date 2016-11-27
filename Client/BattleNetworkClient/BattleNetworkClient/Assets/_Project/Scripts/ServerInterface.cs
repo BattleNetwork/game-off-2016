@@ -285,13 +285,13 @@ public class ServerInterface : Singleton<ServerInterface>
                         Result(JSONNode.Parse(result.Json.ToJsonString()));
                 });
             });
-
-            _socket.Error += (sender, e) => {
-                Debug.Log("socket Error: " + e.Message.ToString());
-                if (Error != null)
-                    Error(e.Message.ToString());
-            };
         });
+
+        _socket.Error += (sender, e) => {
+            Debug.Log("socket Error: " + e.Message.ToString());
+            if (Error != null)
+                Error(e.Message.ToString());
+        };
     }
 
     public void SendCommand(string command)

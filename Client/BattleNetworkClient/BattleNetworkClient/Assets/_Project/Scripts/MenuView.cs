@@ -12,6 +12,7 @@ public class MenuView : MonoBehaviour {
     public CanvasGroup LobbyListScreen;
     public CanvasGroup LobbyScreen;
     public AccountCreationWindow AccountCreationWindow;
+    public PopupOneButton OneButtonPopup;
 
     private string _viewStatus;
     private CanvasGroup actualCanvaGroup;
@@ -89,39 +90,51 @@ public class MenuView : MonoBehaviour {
     {
         if(GameModel.Instance.Menu.IsDirty)
         {
+            if(!string.IsNullOrEmpty(GameModel.Instance.Menu.ErrorMessage))
+            {
+                OneButtonPopup.Configure("Error", GameModel.Instance.Menu.ErrorMessage, "OK", null);
+                OneButtonPopup.Show();
+                GameModel.Instance.Menu.ErrorMessage = "";
+            }
+
             string modelStatus = GameModel.Instance.Menu.Status;
             if(_viewStatus != modelStatus)
             {
-                actualCanvaGroup.DOFade(0f, 0.2f).OnComplete(() =>
-                {
-                    actualCanvaGroup.gameObject.SetActive(false);
-                    if (modelStatus == "inlobby")
-                    {
-                        AnimateTitle(false);
-                        LobbyScreen.gameObject.SetActive(true);
-                        LobbyScreen.DOFade(1.0f, 0.5f);
-                        actualCanvaGroup = LobbyScreen;
-                    }
-                    else if (modelStatus == "browsing")
-                    {
-                        AnimateTitle(false);
-                        LobbyListScreen.gameObject.SetActive(true);
-                        LobbyListScreen.DOFade(1.0f, 0.5f);
-                        actualCanvaGroup = LobbyListScreen;
-                    }
-                    else
-                    {
-                        AnimateTitle(true);
-                        LoginScreen.gameObject.SetActive(true);
-                        LoginScreen.DOFade(1.0f, 0.5f);
-                        actualCanvaGroup = LoginScreen;
-                    }
-
-                    _viewStatus = modelStatus;
-                });
-                
-                
+                StatusTransition(modelStatus);
             }
+
+            GameModel.Instance.Menu.IsDirty = false;
         }
+    }
+
+    public void StatusTransition(string modelStatus)
+    {
+        actualCanvaGroup.DOFade(0f, 0.2f).OnComplete(() =>
+        {
+            actualCanvaGroup.gameObject.SetActive(false);
+            if (modelStatus == "inlobby")
+            {
+                AnimateTitle(false);
+                LobbyScreen.gameObject.SetActive(true);
+                LobbyScreen.DOFade(1.0f, 0.5f);
+                actualCanvaGroup = LobbyScreen;
+            }
+            else if (modelStatus == "browsing")
+            {
+                AnimateTitle(false);
+                LobbyListScreen.gameObject.SetActive(true);
+                LobbyListScreen.DOFade(1.0f, 0.5f);
+                actualCanvaGroup = LobbyListScreen;
+            }
+            else
+            {
+                AnimateTitle(true);
+                LoginScreen.gameObject.SetActive(true);
+                LoginScreen.DOFade(1.0f, 0.5f);
+                actualCanvaGroup = LoginScreen;
+            }
+
+            _viewStatus = modelStatus;
+        });
     }
 }

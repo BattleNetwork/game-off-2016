@@ -31,7 +31,7 @@ public class PopupOneButton : MonoBehaviour
         Root.DOFade(0f, 0.2f).OnComplete(() =>
         {
             Root.gameObject.SetActive(false);
-            _buttonCallback();
+            if(_buttonCallback != null)_buttonCallback();
         });
     }
 }
