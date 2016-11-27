@@ -3,14 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using SimpleJSON;
 using System;
+using System.IO;
 
 public class ServerInterface : Singleton<ServerInterface>
 {
-    public string BaseAddress;
+    private string _baseAddress;
      
     private SocketIOClient.Client _socket;
 
-    protected ServerInterface() { }
+    protected ServerInterface()
+    {
+        _baseAddress = Config.BaseAddress;
+    }
 
     #region Events
     public delegate void NetworkResult(JSONNode result);
@@ -54,19 +58,26 @@ public class ServerInterface : Singleton<ServerInterface>
         Dictionary<string, string> header = new Dictionary<string, string>();
         header.Add("Content-Type", "application/json");
 
-        WWW www = new WWW("http://"+BaseAddress+"/createplayer", encode, header);
+        WWW www = new WWW("http://"+_baseAddress+"/createplayer", encode, header);
         yield return www;
 
         Debug.Log(www.error);
         Debug.Log(www.text);
         if(!string.IsNullOrEmpty(www.error))
         {
-            UserNotCreated(JSON.Parse("{\"error\": \""+ www.error + "\"}"));
+            JSONClass result = new JSONClass();
+            result.Add("error", new JSONData(www.error));
+            UserNotCreated(result);
         }
         else
         {
             JSONNode result = JSON.Parse(www.text);
-            if (result["status"].Value == "error") UserNotCreated(JSON.Parse("{\"error\": \"Problem when adding to database\"}"));
+            if (result["status"].Value == "error")
+            {
+                JSONClass message = new JSONClass();
+                message.Add("error", new JSONData("Problem when adding to database" + '\n' + "username may be taken or one of the field is empty"));
+                UserNotCreated(message);
+            }
             UserCreated(result["content"]);
         }
     }
@@ -147,7 +158,7 @@ public class ServerInterface : Singleton<ServerInterface>
 
     private void CreateSocket(string name, string password)
     {
-        _socket = new SocketIOClient.Client("http://"+ BaseAddress +"/ ");
+        _socket = new SocketIOClient.Client("http://"+ _baseAddress +"/ ");
         _socket.On("connect", (fn) =>
         {
             Debug.Log("connect - socket");
@@ -167,7 +178,10 @@ public class ServerInterface : Singleton<ServerInterface>
             {
                 Debug.Log("authenticated");
                 if (Authenticated != null)
-                    Authenticated(null);
+                {
+                    Authenticated(JSONNode.Parse(data.Encoded));
+                }
+                    
                 _socket.On("lobbylist", (result) =>
                 {
                     Debug.Log("lobby list // " + result.Json.ToJsonString() + "//");

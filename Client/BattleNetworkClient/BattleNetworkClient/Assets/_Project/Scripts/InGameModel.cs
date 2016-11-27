@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections;
-
-public class InGameModel {
+﻿public class InGameModel {
 
 	private bool _isDirty;
     private string _errorMessage;
