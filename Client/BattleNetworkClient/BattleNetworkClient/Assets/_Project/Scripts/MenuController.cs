@@ -66,7 +66,7 @@ public class MenuController : MonoBehaviour {
     {
         foreach(JSONClass lobby in result.Childs)
         {
-            GameModel.Instance.Menu.LobbyList.Push(new Lobby(lobby["name"].Value, lobby["nbPlayer"].AsInt));
+            GameModel.Instance.Menu.LobbyList.Push(new Lobby(lobby["name"].Value, lobby["players"].AsInt));
         }
         GameModel.Instance.Menu.IsDirty = true;
     }
