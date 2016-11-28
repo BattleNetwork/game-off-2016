@@ -27,7 +27,7 @@ Player.prototype.QuitLobby = function()
         this.socket.lobby.RemovePlayer(this);
         if(this.socket.lobby.IsEmpty())
         {
-            //this.socket.lobbyManager.RemoveLobby(this.socket.lobby);
+            this.socket.lobbyManager.RemoveLobby(this.socket.lobby);
         }
     }
 }
@@ -102,11 +102,25 @@ Player.prototype.JoinLobby = function(eventContent)
     if(this.lobbyManager.LobbyExist(eventContent.lobbyName))
     {
         this.lobby = this.lobbyManager.GetLobby(eventContent.lobbyName);
-        this.lobby.AddPlayer(this.player);
-        this.player.room = eventContent.lobbyName;
-        this.join(eventContent.lobbyName);
-        this.player.SetStatusInLobby();
-        this.emit('lobbyjoined', {'lobbyName':eventContent.lobbyName});
+        if(!this.lobby.isFull)
+        {
+            this.lobby.AddPlayer(this.player);
+            this.player.room = eventContent.lobbyName;
+            this.join(eventContent.lobbyName);
+            this.player.SetStatusInLobby();
+            var opponent = {'pseudo':'', 'status':''}//empty
+            if(this.lobby.isFull)//means somebody is already there
+            {
+                opponent.pseudo = this.lobby.FindOpponent(this.player).profil.pseudo;
+                opponent.status = this.lobby.FindOpponent(this.player).isReady;
+            }
+            this.emit('lobbyjoined', {'lobbyName':eventContent.lobbyName, 'opponentInfo':opponent});
+            
+        }
+        else {
+            this.emit('lobbyfull', {});
+        }
+        
     }
     else {
         this.emit('lobbydontexist', {'lobbyName':eventContent.lobbyName});

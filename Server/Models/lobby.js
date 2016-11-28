@@ -4,7 +4,7 @@ _ = require("underscore");
 var Lobby = function(name) {
     this.name = name;
     this.isGoingInGame = false;
-    
+    this.isFull = false;
     this.players = new Array();
 };
 
@@ -14,10 +14,12 @@ Lobby.prototype.AddPlayer = function(player)
     {
         var mappedPlayer = _.mapObject(player, replacer) 
         this.players[0].socket.emit('playerjoined', mappedPlayer)
+        this.isFull = true;
     }
     this.players.push(player);
     
 }
+
 
 function replacer(val, key) {
    if(key == "socket") return null;
@@ -107,7 +109,10 @@ Lobby.prototype.Broadcast = function(eventName, eventArgs)
 
 Lobby.prototype.RemovePlayer = function(player)
 {
+    var opponent = this.FindOpponent(player);
+    if(opponent != undefined)opponent.socket.emit('playerleft', {});
     this.players.splice(this.players.indexOf(player), 1);
+    this.isFull = false;
 }
 
 Lobby.prototype.IsEmpty = function()

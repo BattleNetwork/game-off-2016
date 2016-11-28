@@ -7,11 +7,13 @@ public class MainMenuModel
     private bool _isDirty;
     private string _status;
     private string _errorMessage;
+    private Action _errorCallback;
     private Stack<Lobby> _lobbyList;
     private bool _lobbylistChanged;
     private string _opponentName;
     private bool _opponentStatus;
     private bool _playerStatus;
+    private bool _goInGame;
 
     public bool IsDirty
     {
@@ -19,10 +21,22 @@ public class MainMenuModel
         set { _isDirty = value; }
     }
 
+    public bool GoInGame
+    {
+        get { return _goInGame; }
+        set { _goInGame = value; }
+    }
+
     public bool PlayerStatus
     {
         get { return _playerStatus; }
         set { _playerStatus = value; }
+    }
+
+    public Action ErrorCallback
+    {
+        get { return _errorCallback; }
+        set { _errorCallback = value; }
     }
 
     public bool OpponentStatus
@@ -74,9 +88,10 @@ public class MainMenuModel
         _lobbyList = new Stack<Lobby>();
     }
 
-    public void PlayerJoined(string name)
+    public void PlayerJoined(string name, bool status)
     {
         _opponentName = name;
+        _opponentStatus = status;
         _isDirty = true;
     }
 

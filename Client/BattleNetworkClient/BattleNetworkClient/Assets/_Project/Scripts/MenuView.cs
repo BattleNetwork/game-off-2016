@@ -101,7 +101,8 @@ public class MenuView : MonoBehaviour {
         {
             if(!string.IsNullOrEmpty(GameModel.Instance.Menu.ErrorMessage))
             {
-                OneButtonPopup.Configure("Error", GameModel.Instance.Menu.ErrorMessage, "OK", null);
+                OneButtonPopup.Configure("Error", GameModel.Instance.Menu.ErrorMessage, "OK", GameModel.Instance.Menu.ErrorCallback);
+                GameModel.Instance.Menu.ErrorCallback = null;
                 OneButtonPopup.Show();
                 GameModel.Instance.Menu.ErrorMessage = "";
             }
@@ -112,7 +113,7 @@ public class MenuView : MonoBehaviour {
                 StatusTransition(modelStatus);
             }
 
-            if(GameModel.Instance.Menu.LobbyList.Count > 0)
+            if(GameModel.Instance.Menu.LobbyListChanged)
             {
                 foreach (Transform child in LobbyListElementParent.transform)
                 {
@@ -131,6 +132,7 @@ public class MenuView : MonoBehaviour {
             {
                 if (string.IsNullOrEmpty(GameModel.Instance.Menu.OpponentName))
                 {
+                    OpponentName.text = "";
                     OpponentName.gameObject.SetActive(false);
                     WaitAnimation.SetActive(true);
                 }
@@ -153,6 +155,13 @@ public class MenuView : MonoBehaviour {
             {
                 PlayerStatus.text = (GameModel.Instance.Menu.PlayerStatus) ? "Ready" : "Unready";
                 StatusButtonText.text = (GameModel.Instance.Menu.PlayerStatus) ? "Unready" : "Ready"; ;
+            }
+
+
+            if(GameModel.Instance.Menu.GoInGame)
+            {
+                GameModel.Instance.Menu.GoInGame = false;
+                SceneManager.LoadScene("InGame");
             }
 
             GameModel.Instance.Menu.IsDirty = false;
@@ -193,6 +202,7 @@ public class MenuView : MonoBehaviour {
                 AnimateTitle(false);
                 LobbyListScreen.gameObject.SetActive(true);
                 LobbyListScreen.DOFade(1.0f, 0.5f);
+                ServerInterface.Instance.ListLobby();
                 actualCanvaGroup = LobbyListScreen;
             }
             else

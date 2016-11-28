@@ -27,6 +27,7 @@ public class ServerInterface : Singleton<ServerInterface>
     public static event NetworkResult Unauthorized;
     public static event NetworkListResult LobbyList;
     public static event NetworkResult LobbyCreated;
+    public static event NetworkResult LobbyFull;
     public static event NetworkResult LobbyJoined;
     public static event NetworkResult LobbyLeft;
     public static event NetworkResult ReadySet;
@@ -198,7 +199,6 @@ public class ServerInterface : Singleton<ServerInterface>
                     
                 _socket.On("lobbylist", (result) =>
                 {
-                    Debug.Log("lobby list // " + result.Json.ToJsonString() + "//");
                     if (LobbyList != null)
                     {
                         
@@ -210,93 +210,91 @@ public class ServerInterface : Singleton<ServerInterface>
                 });
                 _socket.On("lobbycreated", (result) =>
                 {
-                    Debug.Log("lobby created // " + result.Json.ToJsonString() + "//");
                     if (LobbyCreated != null)
-                        LobbyCreated(JSONNode.Parse(result.Json.ToJsonString()));
+                        LobbyCreated(JSONNode.Parse(result.Encoded));
+                });
+                _socket.On("lobbyfull", (result) =>
+                {
+                    if (LobbyFull != null)
+                        LobbyFull(JSONNode.Parse(result.Encoded));
                 });
                 _socket.On("lobbyjoined", (result) =>
                 {
-                    Debug.Log("lobby joined // " + result.Json.ToJsonString() + "//");
                     if (LobbyJoined != null)
-                        LobbyJoined(JSONNode.Parse(result.Json.ToJsonString()));
+                    {
+                        JSONNode resultjson = JSONNode.Parse(result.Encoded)["args"][0];
+                        LobbyJoined(resultjson);
+                    }
                 });
                 _socket.On("lobbyleft", (result) =>
                 {
-                    Debug.Log("lobby left // " + result.Json.ToJsonString() + "//");
                     if (LobbyLeft != null)
-                        LobbyLeft(JSONNode.Parse(result.Json.ToJsonString()));
+                        LobbyLeft(JSONNode.Parse(result.Encoded));
                 });
                 _socket.On("readyset", (result) =>
                 {
-                    Debug.Log("readyset // " + result.Json.ToJsonString() + "//");
                     if (ReadySet != null)
-                        ReadySet(JSONNode.Parse(result.Json.ToJsonString()));
+                    {
+                        JSONNode resultjson = JSONNode.Parse(result.Encoded)["args"][0];
+                        ReadySet(resultjson);
+                    }
                 });
                 _socket.On("goingame", (result) =>
                 {
-                    Debug.Log("goingame // " + result.Json.ToJsonString() + "//");
                     if (GoInGame != null)
-                        GoInGame(JSONNode.Parse(result.Json.ToJsonString()));
+                        GoInGame(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("unreadyset", (result) =>
                 {
-                    Debug.Log("unreadyset // " + result.Json.ToJsonString() + "//");
                     if (UnReadySet != null)
-                        UnReadySet(JSONNode.Parse(result.Json.ToJsonString()));
+                        UnReadySet(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("cantunready", (result) =>
                 {
-                    Debug.Log("cantunready // " + result.Json.ToJsonString() + "//");
                     if (CantUnready != null)
-                        CantUnready(JSONNode.Parse(result.Json.ToJsonString()));
+                        CantUnready(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("countdown", (result) =>
                 {
-                    Debug.Log("countdown // " + result.Json.ToJsonString() + "//");
                     if (Countdown != null)
-                        Countdown(JSONNode.Parse(result.Json.ToJsonString()));
+                        Countdown(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("playerjoined", (result) =>
                 {
-                    Debug.Log("playerjoined // " + result.Json.ToJsonString() + "//");
                     if (PlayerJoined != null)
-                        PlayerJoined(JSONNode.Parse(result.Json.ToJsonString()));
+                        PlayerJoined(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("playerleft", (result) =>
                 {
-                    Debug.Log("playerleft // " + result.Json.ToJsonString() + "//");
                     if (PlayerLeft != null)
-                        PlayerLeft(JSONNode.Parse(result.Json.ToJsonString()));
+                        PlayerLeft(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("opponentreadyup", (result) =>
                 {
-                    Debug.Log("opponentreadyup // " + result.Json.ToJsonString() + "//");
                     if (OpponentReadyUp != null)
-                        OpponentReadyUp(JSONNode.Parse(result.Json.ToJsonString()));
+                        OpponentReadyUp(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("opponentunready", (result) =>
                 {
-                    Debug.Log("opponentunready // " + result.Json.ToJsonString() + "//");
                     if (OpponentUnready != null)
-                        OpponentUnready(JSONNode.Parse(result.Json.ToJsonString()));
+                        OpponentUnready(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("update", (result) =>
                 {
-                    Debug.Log("update // " + result.Json.ToJsonString() + "//");
                     if (Update != null)
-                        Update(JSONNode.Parse(result.Json.ToJsonString()));
+                        Update(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("gameover", (result) =>
                 {
-                    Debug.Log("gameover // " + result.Json.ToJsonString() + "//");
+                    
                     if (Gameover != null)
-                        Gameover(JSONNode.Parse(result.Json.ToJsonString()));
+                        Gameover(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
                 _socket.On("result", (result) =>
                 {
-                    Debug.Log("result // " + result.Json.ToJsonString() + "//");
+                    
                     if (Result != null)
-                        Result(JSONNode.Parse(result.Json.ToJsonString()));
+                        Result(JSONNode.Parse(result.Encoded)["args"][0]);
                 });
             });
         });
@@ -318,6 +316,10 @@ public class ServerInterface : Singleton<ServerInterface>
     new void OnDestroy()
     {
         base.OnDestroy();
-        if (_socket != null) _socket.Close();
+        if (_socket != null)
+        {
+            LeaveLobby();
+            _socket.Close();
+        }
     }
 }

@@ -17,7 +17,9 @@ public class AccountCreationWindow : MonoBehaviour
     {
         Form.gameObject.SetActive(true);
         Form.alpha = 1.0f;
+        Wait.gameObject.SetActive(false);
         Wait.alpha = 0f;
+        Result.gameObject.SetActive(false);
         Result.alpha = 0f;
         Root.gameObject.SetActive(true);
         Root.DOFade(1.0f, 0.2f);

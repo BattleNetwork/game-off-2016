@@ -2,6 +2,7 @@
 using System.Collections;
 using SimpleJSON;
 using System;
+using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour {
 
@@ -55,11 +56,16 @@ public class MenuController : MonoBehaviour {
 
     private void LobbyJoined(JSONNode result)
     {
-        string opponentName = result;
-        if(result.AsInt > 0)
-        GameModel.Instance.Menu.SetOpponentStatus(result.AsBool);
-        GameModel.Instance.Menu.PlayerJoined(opponentName);
+        string opponentName = result["opponentInfo"]["pseudo"].Value;
+        bool opponentStatus = result["opponentInfo"]["status"].AsBool;
+        GameModel.Instance.Menu.PlayerJoined(opponentName, opponentStatus);
         GoToLobby();
+    }
+
+    private void LobbyFull(JSONNode result)
+    {
+        GameModel.Instance.Menu.ErrorMessage = "Sorry but this lobby is full \n(by the way you can see it in the details)";
+        GameModel.Instance.Menu.IsDirty = true;
     }
 
     private void LobbyList(JSONArray result)
@@ -68,6 +74,7 @@ public class MenuController : MonoBehaviour {
         {
             GameModel.Instance.Menu.LobbyList.Push(new Lobby(lobby["name"].Value, lobby["players"].AsInt));
         }
+        GameModel.Instance.Menu.LobbyListChanged = true;
         GameModel.Instance.Menu.IsDirty = true;
     }
 
@@ -88,8 +95,14 @@ public class MenuController : MonoBehaviour {
 
     private void PlayerJoined(JSONNode result)
     {
-        string opponentName = result;
-        GameModel.Instance.Menu.PlayerJoined(opponentName);
+        string opponentName = result["profil"]["pseudo"].Value;
+        bool opponentStatus = result["isReady"].AsBool;
+        GameModel.Instance.Menu.PlayerJoined(opponentName, opponentStatus);
+    }
+
+    private void LobbyLeft(JSONNode result)
+    {
+        GameModel.Instance.Menu.PlayerJoined("", false);
     }
 
     private void UnreadySet(JSONNode result)
@@ -104,10 +117,22 @@ public class MenuController : MonoBehaviour {
         GameModel.Instance.Menu.IsDirty = true;
     }
 
+
+    private void GoInGame(JSONNode result)
+    {
+        GameModel.Instance.Menu.GoInGame = true;
+        GameModel.Instance.Menu.IsDirty = true;
+    }
+
     private void Error(string error)
     {
         Debug.Log("ERROR : " + error);
         GameModel.Instance.Menu.ErrorMessage = error;
+        GameModel.Instance.Menu.ErrorCallback = () =>
+        {
+            GameModel.Instance.Menu.Status = "login";
+            GameModel.Instance.Menu.IsDirty = true;
+        };
         GameModel.Instance.Menu.IsDirty = true;
     }
 
@@ -204,12 +229,16 @@ public class MenuController : MonoBehaviour {
         ServerInterface.LobbyList += LobbyList;
         ServerInterface.LobbyCreated += LobbyCreated;
         ServerInterface.LobbyJoined += LobbyJoined;
+        ServerInterface.LobbyFull += LobbyFull;
+        ServerInterface.LobbyLeft += LobbyLeft;
         ServerInterface.PlayerJoined += PlayerJoined;
         ServerInterface.PlayerLeft += PlayerLeft;
         ServerInterface.OpponentReadyUp += OpponentReadyUp;
         ServerInterface.OpponentUnready += OpponentUnready;
         ServerInterface.ReadySet += ReadySet;
         ServerInterface.UnReadySet += UnreadySet;
+        ServerInterface.GoInGame += GoInGame;
         ServerInterface.Error += Error;
     }
+
 }
