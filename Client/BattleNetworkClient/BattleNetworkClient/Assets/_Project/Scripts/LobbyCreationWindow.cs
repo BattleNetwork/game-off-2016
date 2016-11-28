@@ -1,17 +1,18 @@
-﻿using DG.Tweening;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
+using System;
 
-public class AccountCreationWindow : MonoBehaviour
-{
+public class LobbyCreationWindow : MonoBehaviour {
 
     public CanvasGroup Root;
     public CanvasGroup Form;
     public CanvasGroup Wait;
     public CanvasGroup Result;
-    public InputField Username;
-    public InputField Password;
+    public InputField LobbyName;
     public Text ResultText;
+
+    private Action  _callback;
 
     public void Show()
     {
@@ -27,18 +28,18 @@ public class AccountCreationWindow : MonoBehaviour
     {
         Form.DOFade(0.0f, 0.1f).OnComplete(() =>
         {
-            ServerInterface.Instance.CreatePlayer(Username.text, Password.text);
-            Username.text = "";
-            Password.text = "";
+            ServerInterface.Instance.CreateLobby(LobbyName.text);
+            LobbyName.text = "";
             Form.gameObject.SetActive(false);
             Wait.gameObject.SetActive(true);
             Wait.DOFade(1.0f, 0.1f);
         });
-        
+
     }
 
-    public void ShowResult(string result)
+    public void ShowResult(string result, Action callback)
     {
+        _callback = callback;
         Wait.DOFade(0.0f, 0.1f).OnComplete(() =>
         {
             ResultText.text = result;
@@ -50,11 +51,11 @@ public class AccountCreationWindow : MonoBehaviour
 
     public void Hide()
     {
-        Root.DOFade(1.0f, 0.2f).OnComplete(() => 
+        Root.DOFade(1.0f, 0.2f).OnComplete(() =>
         {
             Root.gameObject.SetActive(false);
-            Username.text = "";
-            Password.text = "";
+            LobbyName.text = "";
+            _callback();
         });
     }
 }

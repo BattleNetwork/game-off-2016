@@ -2,20 +2,39 @@
 using System.Collections;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEngine.SceneManagement;
+using System;
 
 public class MenuView : MonoBehaviour {
 
     public Text Title;
+
     public CanvasGroup LoginScreen;
-    public Text Username;
-    public Text Password;
+    public InputField Username;
+    public InputField Password;
+
     public CanvasGroup LobbyListScreen;
+    public GameObject LobbyListElementPrefab;
+    public Transform LobbyListElementParent;
+    public Text LobbyNameDetail;
+    public Text LobbyNbPlayerDetail;
+
     public CanvasGroup LobbyScreen;
+    public Text OpponentName;
+    public Text OpponentStatus;
+    public Text PlayerStatus;
+    public Text StatusButtonText;
+    public GameObject WaitAnimation;
+    public Text PlayerName;
+
     public AccountCreationWindow AccountCreationWindow;
+    public LobbyCreationWindow LobbyCreationWindow;
     public PopupOneButton OneButtonPopup;
 
     private string _viewStatus;
     private CanvasGroup actualCanvaGroup;
+
+    
 
     // Use this for initialization
     void Start () {
@@ -76,16 +95,6 @@ public class MenuView : MonoBehaviour {
         
     }
 
-    public void NewAccount()
-    {
-        AccountCreationWindow.Show();
-    }
-
-    public void Login()
-    {
-        ServerInterface.Instance.StartAuthentifiedConnection(Username.text, Password.text);
-    }
-
     public void Update()
     {
         if(GameModel.Instance.Menu.IsDirty)
@@ -103,8 +112,68 @@ public class MenuView : MonoBehaviour {
                 StatusTransition(modelStatus);
             }
 
+            if(GameModel.Instance.Menu.LobbyList.Count > 0)
+            {
+                foreach (Transform child in LobbyListElementParent.transform)
+                {
+                    GameObject.Destroy(child.gameObject);
+                }
+                while (GameModel.Instance.Menu.LobbyList.Count > 0)
+                {
+                    GameObject newElement = Instantiate<GameObject>(LobbyListElementPrefab);
+                    newElement.transform.SetParent(LobbyListElementParent, false);
+                    newElement.GetComponentInChildren<LobbyButton>().Configure(GameModel.Instance.Menu.LobbyList.Pop());
+                }
+                GameModel.Instance.Menu.LobbyListChanged = false;
+            }
+
+            if(OpponentName.text != GameModel.Instance.Menu.OpponentName)
+            {
+                if (string.IsNullOrEmpty(GameModel.Instance.Menu.OpponentName))
+                {
+                    OpponentName.gameObject.SetActive(false);
+                    WaitAnimation.SetActive(true);
+                }
+                else
+                {
+                    OpponentName.text = GameModel.Instance.Menu.OpponentName;
+                    OpponentName.gameObject.SetActive(true);
+                    WaitAnimation.SetActive(false);
+                }
+            }
+
+            if (PlayerName.text != GameModel.Instance.PlayerName) PlayerName.text = GameModel.Instance.PlayerName;
+
+            if ((OpponentStatus.text == "Unready" && GameModel.Instance.Menu.OpponentStatus) || (OpponentStatus.text == "Ready" && !GameModel.Instance.Menu.OpponentStatus))
+            {
+                OpponentStatus.text = (GameModel.Instance.Menu.OpponentStatus) ? "Ready" : "Unready";
+            }
+
+            if ((PlayerStatus.text == "Unready" && GameModel.Instance.Menu.PlayerStatus) || (PlayerStatus.text == "Ready" && !GameModel.Instance.Menu.PlayerStatus))
+            {
+                PlayerStatus.text = (GameModel.Instance.Menu.PlayerStatus) ? "Ready" : "Unready";
+                StatusButtonText.text = (GameModel.Instance.Menu.PlayerStatus) ? "Unready" : "Ready"; ;
+            }
+
             GameModel.Instance.Menu.IsDirty = false;
         }
+    }
+
+    internal void ReadyUp()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void HideLobbyDetails()
+    {
+        LobbyNameDetail.text = "Name : ---";
+        LobbyNbPlayerDetail.text = "Nb Player : -/2";
+    }
+
+    public void ShowLobbyDetails(Lobby lobby)
+    {
+        LobbyNameDetail.text = "Name : " + lobby.Name;
+        LobbyNbPlayerDetail.text = "Nb Player : " + lobby.NbPlayer + "/2";
     }
 
     public void StatusTransition(string modelStatus)
@@ -130,6 +199,8 @@ public class MenuView : MonoBehaviour {
             {
                 AnimateTitle(true);
                 LoginScreen.gameObject.SetActive(true);
+                Username.text = "";
+                Password.text = "";
                 LoginScreen.DOFade(1.0f, 0.5f);
                 actualCanvaGroup = LoginScreen;
             }

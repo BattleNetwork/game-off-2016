@@ -116,6 +116,18 @@ public class ServerInterface : Singleton<ServerInterface>
         _socket.Emit("joinlobby", args);
     }
 
+    public void Unready()
+    {
+        Dictionary<string, string> args = new Dictionary<string, string>();
+        _socket.Emit("unreadytoplay", args);
+    }
+
+    public void ReadyUp()
+    {
+        Dictionary<string, string> args = new Dictionary<string, string>();
+        _socket.Emit("readytoplay", args);
+    }
+
     public void CloseConnection()
     {
         Debug.Log("Closing");
@@ -123,6 +135,8 @@ public class ServerInterface : Singleton<ServerInterface>
         _socket.Close();
         ClearEvents();
     }
+
+    
 
     private void ClearEvents()
     {
@@ -171,7 +185,7 @@ public class ServerInterface : Singleton<ServerInterface>
             {
                 Debug.Log("unauthorized");
                 if (Unauthorized != null)
-                    Unauthorized(null);
+                    Unauthorized(JSON.Parse(data.Encoded));
                 _socket.Close();
             });
             _socket.On("authenticated", (data) =>
