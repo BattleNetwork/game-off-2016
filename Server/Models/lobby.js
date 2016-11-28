@@ -1,4 +1,5 @@
 var async = require('async');
+_ = require("underscore");
 
 var Lobby = function(name) {
     this.name = name;
@@ -11,10 +12,16 @@ Lobby.prototype.AddPlayer = function(player)
 {
     if(this.players.length > 0)
     {
-        players[0].socket.emit('playerjoined', player)
+        var mappedPlayer = _.mapObject(player, replacer) 
+        this.players[0].socket.emit('playerjoined', mappedPlayer)
     }
     this.players.push(player);
     
+}
+
+function replacer(val, key) {
+   if(key == "socket") return null;
+   else return val;
 }
 
 Lobby.prototype.SetPlayerReady = function(player)
