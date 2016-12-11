@@ -52,7 +52,7 @@ Lobby.prototype.SetPlayerInGame = function(player)
     var opponent = this.FindOpponent(player);
     if(opponent != null && opponent.isInGame)
     {
-        broadcast('countdown', 5);
+        this.Broadcast('countdown', 5);
         player.SetStatusInGame();
         opponent.SetStatusInGame();
     }

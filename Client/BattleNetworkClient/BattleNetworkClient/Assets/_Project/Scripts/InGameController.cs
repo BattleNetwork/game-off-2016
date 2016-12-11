@@ -6,51 +6,48 @@ using System;
 
 public class InGameController : MonoBehaviour {
 
-    private InGameModel igModel;
-
-    public InGameModel IgModel
-    {
-        get{ return igModel; }
-    }
-
     // Use this for initialization
     void Start () {
-
-        igModel = new InGameModel();
-
         ServerInterface.Gameover += GameOver;
         ServerInterface.PlayerLeft += OpponentLeft;
         ServerInterface.Result += CommandResult;
         ServerInterface.Countdown += Countdown;
+        StartCoroutine(SendInGame());
+    }
+
+    private IEnumerator SendInGame()
+    {
+        yield return new WaitForEndOfFrame();
+        ServerInterface.Instance.NotifyInGame();
     }
 
     private void CommandResult(JSONNode result)
     {
-        igModel.ConsoleResult += '\n' + result.AsArray[0]["commandResult"];//must adapt server result
-        igModel.IsDirty = true;
+        GameModel.Instance.Ingame.ConsoleResult += '\n' + result["commandResult"];//must adapt server result
+        GameModel.Instance.Ingame.IsDirty = true;
     }
 
     private void OpponentLeft(JSONNode result)
     {
-        igModel.ErrorMessage = "Your Opponent left the game... Sorry about that. \nYou will be taken to the Lobby selection";
-        igModel.IsDirty = true;
+        GameModel.Instance.Ingame.ErrorMessage = "Your Opponent left the game... Sorry about that. \nYou will be taken to the Lobby selection";
+        GameModel.Instance.Ingame.IsDirty = true;
     }
 
     private void GameOver(JSONNode result)
     {
-        igModel.Winner = result.AsArray[0]["winner"].AsInt;//must adapt server result
-        igModel.IsDirty = true;
+        GameModel.Instance.Ingame.Winner = result["winner"].AsInt;//must adapt server result
+        GameModel.Instance.Ingame.IsDirty = true;
     }
 
     private void Countdown(JSONNode result)
     {
-        igModel.Countdown = result.AsArray[0]["countdown"].AsFloat;//must adapt server result
-        igModel.Team = result.AsArray[0]["team"].AsInt;//must adapt server result
+        GameModel.Instance.Ingame.Countdown = result["countdown"].AsFloat;//must adapt server result
+        GameModel.Instance.Ingame.Team = result["team"].AsInt;//must adapt server result
     }
 
     public void SendCommand(string newConsoleContent)
     {
-        string command = newConsoleContent.Remove(newConsoleContent.IndexOf(igModel.Console), igModel.Console.Length);
+        string command = newConsoleContent.Remove(newConsoleContent.IndexOf(GameModel.Instance.Ingame.Console), GameModel.Instance.Ingame.Console.Length);
         //must add verification (at least empty command and command beginning with some char?)
         ServerInterface.Instance.SendCommand(command);
     }

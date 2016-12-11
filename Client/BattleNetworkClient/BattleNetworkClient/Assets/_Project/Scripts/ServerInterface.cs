@@ -306,6 +306,12 @@ public class ServerInterface : Singleton<ServerInterface>
         };
     }
 
+    public void NotifyInGame()
+    {
+        Dictionary<string, string> args = new Dictionary<string, string>();
+        _socket.Emit("ingame", args);
+    }
+
     public void SendCommand(string command)
     {
         Dictionary<string, string> args = new Dictionary<string, string>();

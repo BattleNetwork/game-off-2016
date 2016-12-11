@@ -20,39 +20,39 @@ public class InGameView : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	    if(IgCtrl.IgModel.IsDirty && !IgCtrl.IgModel.IsGameover)
+	    if(GameModel.Instance.Ingame.IsDirty && !GameModel.Instance.Ingame.IsGameover)
         {
-            if(!string.IsNullOrEmpty(IgCtrl.IgModel.ErrorMessage))
+            if(!string.IsNullOrEmpty(GameModel.Instance.Ingame.ErrorMessage))
             {
                 Action errorAction = IgCtrl.ErrorCallback;
-                OneButtonPopup.Configure("Error", IgCtrl.IgModel.ErrorMessage, "Ok", errorAction);
-                IgCtrl.IgModel.ErrorMessage = "";// so we don't rise it again when the next dirty state is set
+                OneButtonPopup.Configure("Error", GameModel.Instance.Ingame.ErrorMessage, "Ok", errorAction);
+                GameModel.Instance.Ingame.ErrorMessage = "";// so we don't rise it again when the next dirty state is set
                 OneButtonPopup.Show();
                 return;
             }
 
-            if(IgCtrl.IgModel.Countdown > 0)
+            if(GameModel.Instance.Ingame.Countdown > 0)
             {
-                StartCoroutine(CountDown(IgCtrl.IgModel.Countdown));
-                IgCtrl.IgModel.Countdown = -1;
+                StartCoroutine(CountDown(GameModel.Instance.Ingame.Countdown));
+                GameModel.Instance.Ingame.Countdown = -1;
             }
 
-            if(IgCtrl.IgModel.Winner != 0)
+            if(GameModel.Instance.Ingame.Winner != 0)
             {
                 Action gameOverAction = IgCtrl.GameOverCallback;
-                ScoreAnimation.Show(IgCtrl.IgModel.Winner, IgCtrl.IgModel.Team, gameOverAction);
+                ScoreAnimation.Show(GameModel.Instance.Ingame.Winner, GameModel.Instance.Ingame.Team, gameOverAction);
                 return;
             }
 
-            if(!string.IsNullOrEmpty(IgCtrl.IgModel.ConsoleResult))
+            if(!string.IsNullOrEmpty(GameModel.Instance.Ingame.ConsoleResult))
             {
 
-                StartCoroutine(ConsoleLineByLineDisplay(IgCtrl.IgModel.ConsoleResult));
-                IgCtrl.IgModel.ConsoleResult = "";
+                StartCoroutine(ConsoleLineByLineDisplay(GameModel.Instance.Ingame.ConsoleResult));
+                GameModel.Instance.Ingame.ConsoleResult = "";
                 
             }
 
-            IgCtrl.IgModel.IsDirty = false;
+            GameModel.Instance.Ingame.IsDirty = false;
         }
 	}
 
@@ -108,7 +108,7 @@ public class InGameView : MonoBehaviour {
             yield return new WaitForSeconds(0.5f);
         }
 
-        IgCtrl.IgModel.Console = Console.text;
+        GameModel.Instance.Ingame.Console = Console.text;
         Console.interactable = true;
         Console.Select();
         Console.ActivateInputField();
