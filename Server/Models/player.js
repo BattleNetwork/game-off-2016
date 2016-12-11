@@ -1,3 +1,5 @@
+_ = require("underscore");
+
 var Player = function(profil, socket) {
     this.profil = profil;
     this.socket = socket;
@@ -5,6 +7,7 @@ var Player = function(profil, socket) {
     this.status = "init";
     this.room = "";//no room attributed in the first place
     this.isReady = false;
+    this.isInGame = false;
 };
 
 Player.prototype.SetStatusAuthenticated = function()
@@ -15,6 +18,18 @@ Player.prototype.SetStatusAuthenticated = function()
     this.socket.on('joinlobby',this.JoinLobby);
 
     this.status = "authenticated";
+}
+
+Player.prototype.QuitLobby = function()
+{
+    if(this.socket.lobby != null)
+    {
+        this.socket.lobby.RemovePlayer(this);
+        if(this.socket.lobby.IsEmpty())
+        {
+            this.socket.lobbyManager.RemoveLobby(this.socket.lobby);
+        }
+    }
 }
 
 Player.prototype.SetStatusInLobby = function()
@@ -60,8 +75,19 @@ Player.prototype.ClearSocketEvents = function()
 
 Player.prototype.ListLobby = function(eventContent)
 {
-    this.emit('lobbylist', JSON.stringify(this.lobbyManager.lobbyList));
+    var result = _.map(this.lobbyManager.lobbyList, function(val, index)
+    {
+        return _.mapObject(val, replacer)
+    });
+    //var result = JSON.parse(JSON.stringify(this.lobbyManager.lobbyList, ["name"]));
+    this.emit('lobbylist', result);
 }
+
+function replacer(val, key) {
+   if(key == "players") return val.length;
+   else return val;
+}
+
 Player.prototype.CreateLobby = function(eventContent)
 {
     this.lobby = this.lobbyManager.AddLobby(eventContent.lobbyName);
@@ -76,11 +102,25 @@ Player.prototype.JoinLobby = function(eventContent)
     if(this.lobbyManager.LobbyExist(eventContent.lobbyName))
     {
         this.lobby = this.lobbyManager.GetLobby(eventContent.lobbyName);
-        this.lobby.AddPlayer(this.player);
-        this.player.room = eventContent.lobbyName;
-        this.join(eventContent.lobbyName);
-        this.player.SetStatusInLobby();
-        this.emit('lobbyjoined', {'lobbyName':eventContent.lobbyName});
+        if(!this.lobby.isFull)
+        {
+            this.lobby.AddPlayer(this.player);
+            this.player.room = eventContent.lobbyName;
+            this.join(eventContent.lobbyName);
+            this.player.SetStatusInLobby();
+            var opponent = {'pseudo':'', 'status':''}//empty
+            if(this.lobby.isFull)//means somebody is already there
+            {
+                opponent.pseudo = this.lobby.FindOpponent(this.player).profil.pseudo;
+                opponent.status = this.lobby.FindOpponent(this.player).isReady;
+            }
+            this.emit('lobbyjoined', {'lobbyName':eventContent.lobbyName, 'opponentInfo':opponent});
+            
+        }
+        else {
+            this.emit('lobbyfull', {});
+        }
+        
     }
     else {
         this.emit('lobbydontexist', {'lobbyName':eventContent.lobbyName});
@@ -89,6 +129,7 @@ Player.prototype.JoinLobby = function(eventContent)
 Player.prototype.LeaveLobby = function(eventContent)
 {
     this.leave(this.room);
+    this.player.QuitLobby();
     this.player.SetStatusAuthenticated();
     this.emit('lobbyleft', null);
 }

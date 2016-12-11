@@ -1,26 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using DG.Tweening;
+using UnityEngine.SceneManagement;
 
-public class Login : MonoBehaviour {
+public class LoginAnimations : MonoBehaviour {
     public GameObject titleText;
     public GameObject loginCanvas;
     public GameObject usernameField;
     public GameObject passwordField;
     public GameObject settingsButton;
-    public GameObject quitButton;
+    public Button quitButton;
     public GameObject loginButton;
     public Image loginListPanel;
     public float waitTime = 10;
     public GameObject connectButton;
     public GameObject refreshButton;
-    public int successOrFail; //debug: 0 = successful connection, 1 = fail.
+    public GameObject createButton;
+    public GameObject userCreateMessagePanel;
+    public Button createUserButton;
+    public Button userCreateOkButton;
+    public GameObject panelQuitConfirm;
+    public GameObject panelLobbyReady;
+
+
+    private ServerInterface serverInterface;
 
     private float actTime;
-    private float loginWaitTime = 5.0f;
     private Text titleTextText;
-    private int connectionStatus= -1;
     private int sequence = 1;
     private RectTransform qButtonRect;
     private RectTransform lButtonRect;
@@ -28,35 +34,92 @@ public class Login : MonoBehaviour {
     private RectTransform titleTextRect;
     private float alpha;
 
-
-
-
-    public void LobbyConnection()
+    void ReadyUp(string playerName)
     {
-        while (connectionStatus < 0)
-        {
-            actTime += Time.deltaTime;
-            if (successOrFail == 0 & actTime >= loginWaitTime) //change to connection result SUCCESS when implemented
-            {
-                GameObject.Find("LoggingInText").GetComponent<Text>().text = "Connected.";
-                connectionStatus = 0;
-            }
-            else if (successOrFail == 1 & actTime >= loginWaitTime)
-            {
-                GameObject.Find("LoggingInText").GetComponent<Text>().text = "Connection Failed.";
-                connectionStatus = 1;
-            }
-        }
+        GameObject.Find("TextOpponent").GetComponent<Text>().text = GameObject.Find("TextOpponent").GetComponent<Text>().text + playerName;
+        panelLobbyReady.SetActive(true);
+
     }
+
+    void UserCreationConfirm()
+    {
+        userCreateMessagePanel.SetActive(true);
+    }
+
+    void CloseUserCreation()
+    {
+        userCreateMessagePanel.SetActive(false);
+    }
+
+    void RefreshList()
+    {
+        SendMessage("RefreshLobbyList");
+    }
+
+    void Login()
+    {
+        serverInterface.StartAuthentifiedConnection(usernameField.GetComponentInChildren<Text>().text, passwordField.GetComponentInChildren<Text>().text);
+    }
+
+    void UserCreation()
+    {
+        serverInterface.CreatePlayer(usernameField.GetComponentInChildren<Text>().text, passwordField.GetComponentInChildren<Text>().text);
+    }
+
+    void CreateLobby()
+    {
+        serverInterface.CreateLobby(usernameField.GetComponentInChildren<Text>().text);
+
+        panelLobbyReady.SetActive(true);
+        Button cancel = GameObject.Find("ButtonLobbyReadyCancel").GetComponent<Button>();
+        cancel.onClick.AddListener(CancelSearch);
+        serverInterface.CloseConnection();
+
+    }
+
+    void QuitConfirmation()
+    {
+        panelQuitConfirm.SetActive(true);
+        Button quitConfirm = GameObject.Find("ButtonQuitConfirm").GetComponent<Button>();
+        Button quitCancel = GameObject.Find("ButtonQuitCancel").GetComponent<Button>();
+        quitConfirm.onClick.AddListener(Quit);
+        quitCancel.onClick.AddListener(CancelQuit);
+    }
+    void Quit()
+    {
+        serverInterface.CloseConnection();
+        Application.Quit();
+    }
+    void CancelQuit()
+    {
+        panelQuitConfirm.SetActive(false);
+    }
+    void Logout()
+    {
+        serverInterface.CloseConnection();
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    void WaitingForOpponent()
+    {
+    }
+
+    void CancelSearch()
+    {
+        panelLobbyReady.SetActive(false);
+    }
+
     void LobbyTransition()
     {
         switch(sequence)
         {
             case 1:
+                createUserButton.gameObject.SetActive(false);
                 usernameField.SetActive(false);
                 passwordField.SetActive(false);
                 sequence += 1;
                 break;
+
             case 2:
                 if (titleTextText.fontSize > 30 & actTime >= waitTime)
                 {
@@ -129,8 +192,15 @@ public class Login : MonoBehaviour {
                 }
                 break;
             case 6:
+                loginButton.GetComponentInChildren<Text>().text = "Logout";
+                loginButton.GetComponent<Button>().onClick.RemoveAllListeners();
+                loginButton.GetComponent<Button>().onClick.AddListener(Logout);
+
+
                 refreshButton.SetActive(true);
                 connectButton.SetActive(true);
+                createButton.SetActive(true);
+
                 break;
 
             default:
@@ -141,29 +211,27 @@ public class Login : MonoBehaviour {
     // Use this for initialization
     void Start ()
     {
-        Sequence lobbySequence = DOTween.Sequence();
+        serverInterface = GetComponent<ServerInterface>();
 
-        titleTextText = titleText.GetComponent<Text>();
-        titleTextRect = titleText.GetComponent<RectTransform>();
-        Button lButton = loginButton.GetComponent<Button>();
-        lButton.onClick.AddListener(LobbyConnection);
-        qButtonRect = quitButton.GetComponent<RectTransform>();
-        lButtonRect = loginButton.GetComponent<RectTransform>();
-        sButtonRect = settingsButton.GetComponent<RectTransform>();
+        panelQuitConfirm.SetActive(false);
         loginListPanel.gameObject.SetActive(false);
         refreshButton.SetActive(false);
         connectButton.SetActive(false);
+        createButton.SetActive(false);
+        userCreateMessagePanel.SetActive(false);
+        panelLobbyReady.SetActive(false);
 
+        titleTextText = titleText.GetComponent<Text>();
+        titleTextRect = titleText.GetComponent<RectTransform>();
+        qButtonRect = quitButton.gameObject.GetComponent<RectTransform>();
+        lButtonRect = loginButton.GetComponent<RectTransform>();
+        sButtonRect = settingsButton.GetComponent<RectTransform>();
 
+        userCreateOkButton.onClick.AddListener(CloseUserCreation);
+        loginButton.GetComponent<Button>().onClick.AddListener(Login);
+        createUserButton.GetComponent<Button>().onClick.AddListener(UserCreation);
+        quitButton.GetComponent<Button>().onClick.AddListener(QuitConfirmation);
+        refreshButton.GetComponent<Button>().onClick.AddListener(RefreshList);
+        createButton.GetComponent<Button>().onClick.AddListener(CreateLobby);
     }
-
-    // Update is called once per frame
-    void Update ()
-    {
-        actTime += Time.deltaTime;
-        if (connectionStatus == 0)
-        {
-            StartCoroutine("LobbyTransition");
-        }
-	}
 }

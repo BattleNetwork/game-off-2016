@@ -1,9 +1,10 @@
 var async = require('async');
+_ = require("underscore");
 
 var Lobby = function(name) {
     this.name = name;
     this.isGoingInGame = false;
-    this.player.isInGame = false;
+    this.isFull = false;
     this.players = new Array();
 };
 
@@ -11,10 +12,18 @@ Lobby.prototype.AddPlayer = function(player)
 {
     if(this.players.length > 0)
     {
-        players[0].socket.emit('playerjoined', player)
+        var mappedPlayer = _.mapObject(player, replacer) 
+        this.players[0].socket.emit('playerjoined', mappedPlayer)
+        this.isFull = true;
     }
     this.players.push(player);
     
+}
+
+
+function replacer(val, key) {
+   if(key == "socket") return null;
+   else return val;
 }
 
 Lobby.prototype.SetPlayerReady = function(player)
@@ -43,7 +52,7 @@ Lobby.prototype.SetPlayerInGame = function(player)
     var opponent = this.FindOpponent(player);
     if(opponent != null && opponent.isInGame)
     {
-        broadcast('countdown', 5);
+        this.Broadcast('countdown', 5);
         player.SetStatusInGame();
         opponent.SetStatusInGame();
     }
@@ -96,5 +105,19 @@ Lobby.prototype.Broadcast = function(eventName, eventArgs)
     {
         console.log("ERROR WHILE BROADCASTING");
     });
+}
+
+Lobby.prototype.RemovePlayer = function(player)
+{
+    var opponent = this.FindOpponent(player);
+    if(opponent != undefined)opponent.socket.emit('playerleft', {});
+    this.players.splice(this.players.indexOf(player), 1);
+    this.isFull = false;
+}
+
+Lobby.prototype.IsEmpty = function()
+{
+    if(this.players.length > 0) return false;
+    return true;
 }
 module.exports = Lobby;
